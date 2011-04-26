@@ -1,0 +1,13 @@
+CMS для корпоративного портала.
+
+Основной адрес документации: http://trac.std.tsogu.ru/
+
+Для работы требуется:
+ - Django 1.2.1
+ - FFmpeg 0.5 и lame 3.97 (для перекодирования видео в видеофайлах)
+ - Feedparser (для работы отображения RSS-лент)
+
+В проекте используются (присутствуют сразу):
+ - Pytils (автор Yury Yurevich, http://www.pyobject.ru/projects/pytils/, GPLv2)
+ - Django-tinymce-connector 
+ - SphinxAPI (авторы Andrew Aksyonoff, Mike Osadnik, GPLv2)
