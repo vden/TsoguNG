@@ -1,0 +1,196 @@
+{% load cache %}
+
+{% cache 300 rating request.GET %}
+<style>
+.row {
+	margin: 0.5em;
+}
+.filters label {
+	vertical-align:bottom;
+	margin-right:2em;
+}
+.filters select {
+	margin-right:1em;
+	width: 400px;
+}
+.underlined td {
+	border-bottom: 2px solid #f66 !important;
+}
+</style>
+
+<script language="javascript">
+function setSpec() {
+	if ($('#edu_form').val() && $('#inst').val()) {
+	$.getJSON('http://www.tsogu.ru/abiturient/api/specialities/json/?eduform_id='+$('#edu_form').val()+'&inst_id='+$('#inst').val(), 
+		function (data) {
+			$('#spec').html();
+			var i=0;
+			var res='';
+			for (i=0;i<=data.length-1;i++){
+				if (String(data[i].id) != String('{{ request.GET.spec }}')) {
+					res += '<option id="spec_'+data[i].id+'" value="'+data[i].id+'">'+data[i].name+'</option>';
+				} else {
+					res += '<option id="spec_'+data[i].id+'" value="'+data[i].id+'" selected>'+data[i].name+'</option>';
+				}
+			}
+			$('#spec').html(res);
+		});
+	}
+	else {}
+}
+</script>
+
+
+
+{% load extra_api %}
+{% gjson "http://rubicon.tsogu.ru/abiturient/api/eduform/json/" as eduform %}
+{% gjson "http://rubicon.tsogu.ru/abiturient/api/institutes/json/" as institutes %}
+
+<h4>Рейтинг - список рекомендованных к зачислению
+{% if inst and not notfound %}
+	({{inst}}, {{edu_form}} - {{spec_name}})
+{% endif %}
+</h4>
+
+<form method="get" action="." class="filters">
+<hr/>
+
+<table>
+	<tr>
+		<td><label for="edu_form">Форма обучения</label></td>
+		<td>
+			<select name="edu_form" id="edu_form" onchange="setSpec();">
+				{% for row in eduform %}
+				<option id="edu_form_{{ row.id }}" value="{{ row.id }}" 
+					{% ifequal row.id request.GET.edu_form %}selected{% endifequal %}>{{ row.name }}</option>
+				{% endfor %}
+			</select>
+			<script language="javascript">
+				$('#edu_form_{{ request.GET.edu_form }}').attr('selected',true);
+			</script>
+		</td>
+	</tr>
+	<tr>
+		<td><label for="inst">Институт</label></td>
+		<td>
+			<select name="inst" id="inst" onchange="setSpec();">
+				<option value="">--Институт--</option>
+				{% for row in institutes %}
+				<option id="inst_{{ row.id }}" value="{{ row.id }}" 
+					{% ifequal row.id request.GET.inst %}selected{% endifequal %}>{{ row.name }}</option>
+				{% endfor %}
+			</select>
+			<script language="javascript">
+				$('#inst_{{ request.GET.inst }}').attr('selected',true);
+			</script>
+		</td>
+	</tr>
+	<tr>
+		<td><label for="spec">Специальность</label></td>
+		<td>
+			<select name="spec" id="spec">
+				<option value="">--Спец.--</option>
+			</select>
+			<script language="javascript">
+				setSpec();
+			</script>
+		</td>
+	</tr>
+	<tr>
+		<td><label for="category">Категория</label></td>
+		<td>
+			<select name="category" id="category">
+				<option id="category_konkurs" value="konkurs">конкурс</option>
+				<option id="category_dogovor" value="dogovor">договор</option>
+			</select>
+			<script language="javascript">
+				$('#category_{{ request.GET.category }}').attr('selected',true);
+			</script>
+		</td>
+	</tr>
+</table>
+<div class="row">
+	<input type="checkbox" value="1" name="by_groupe" id="by_groupe" {% if request.GET.by_groupe %}checked{% endif %}>
+	<label for="by_groupe">По группе специальностей</label>
+	<input type="checkbox" value="1" name="origin" id="origin" {% if request.GET.origin %}checked{% endif %}>
+	<label for="origin">Только оригиналы</label>
+</div>
+<div class="row">
+	<input type="submit" value="Показать"/>
+</div>
+</form>
+<hr/>
+
+{% if request.GET.spec %}
+{% gjson "http://rubicon.tsogu.ru/abiturient/api/rating/json/?plan_id=" request.GET.spec "&category=" request.GET.category "&originals=" request.GET.origin "&group=" request.GET.by_groupe as data %}
+
+{% if not data %}
+	<h4>Данные по Вашему запросу отсутствуют.</h4>
+{% else %}
+{% if data.message %}
+	<h4>{{ data.message }}</h4>
+{% else %}
+<p><b>Рейтинг составлен по следующим специальностям: </b> {% for x in data.composition %}
+<a href="/entrant/specialities/?speciality={{ x.spec_id }}" title='{{x.full_name}}'>{{ x.name }}</a>
+{% if not forloop.last %}, {% endif %}{% endfor %}
+{% if data.data %}{% if not request.GET.by_groupe %}&nbsp<a class='local-link' href='#note'>(Примечание)</a>{% endif %}{% endif %}</p>
+<p><b>Количество мест:</b> {{ data.places }}</p>
+
+{% if data.data %}
+<table class="striped">
+	<tr>
+		<th rowspan="{{ data.rowspan }}"></th>
+		<th rowspan="{{ data.rowspan }}">ФИО</th>
+		<th rowspan="{{ data.rowspan }}">Приоритет</th>
+		<th rowspan="{{ data.rowspan }}">Балл аттестата</th>
+		{% if data.subj_list %}
+			<th colspan="{{ data.subj_count }}">Результаты</th>
+		<th rowspan="{{ data.rowspan }}">Балл</th>
+		{% endif %}
+		<th rowspan="{{ data.rowspan }}" style="width:63px;"></th>
+		
+	</tr>
+
+	{% if data.subj_list %}
+	<tr>
+		{% for row in data.subj_list %}
+			<th>{{ row.subject }}</th>
+		{% endfor %}
+	</tr>
+	{% endif %}
+
+	{% for row in data.data %}
+	<tr {% ifequal row.number data.places %}class="underlined"{% endifequal %} >
+		<td>{{ row.number }}</td>
+		<td style="text-align: left; padding-left: 3px">{{ row.surname }} {{ row.name }} {{ row.lastname }}</td>
+		<td>{{ row.priority }}</td>
+		<td>{{ row.average|floatformat:2 }}</td>
+
+		{% if data.subj_list %}
+			{% for result in row.results %}
+				<td>{{ result }}</td>
+			{% endfor %}
+			<td>{% ifequal row.score None %}-{% else %}{{ row.score }}{% endifequal %}</td>
+		{% endif %}
+
+		<td>
+			{% if not row.originals %}
+			копии
+			{% endif %}	
+		</td>
+	</tr>
+	
+	{% endfor %}
+</table>
+{% if not request.GET.by_groupe %}
+<a name='note'></a><p><b><i>Если Ваше ФИО находится ниже красной черты, то перед принятием окончательного решения по поводу участия в конкурсе при зачислении, уточните, какой у Вас рейтинг по соответствующей группе зачисления.</i></b></p>
+{% endif %}
+{% else %}
+<br/>
+<p><h4>Заявлений не подано</h4></p>
+{% endif %}
+{% endif %}
+<p style="text-align: right; color: gray;">Данные получены на  {{ data.date }}. Данные обновятся через 1 час.</p>
+{% endif %}
+{% endif %}
+{% endcache %}

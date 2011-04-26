@@ -1,0 +1,37 @@
+<style type="text/css">
+	#student-confirm {
+		display: none;
+		margin-left: 10px;
+		width: 400px;
+	}
+	#student-confirm a{
+		float: right;
+	}
+	.help {
+		color: #666;
+	}
+	#result-student-confirm {
+		clear: both;
+	}
+</style>
+
+<div id="student-confirm">
+	<p class="help">Укажите логин и пароль от вашей учётной записи в системе EDUCON.</p>
+	<p><label>username:</label><input name="login" type="text"/></p>
+	<p><label>password:</label><input name="password" type="password"/></p>
+	<div id="result-student-confirm">&nbsp;</div>
+	<a id="send-student-confirm" href="javascript:;" class="local-link">Отправить запрос подтверджения</a>
+</div>
+<script type="text/javascript">
+	var student_confirm_result = $("#result-student-confirm");
+	$("#send-student-confirm").click(function() {
+		$.ajax({
+			url: "/userprofile/student_status_confirm/",
+			type: "POST",
+			data: $('#student-confirm input').serialize(),
+			beforeSend: function() {student_confirm_result.text("... запрос обрабатывается ...");},
+			success: function(data) {student_confirm_result.css('color', '#2e6890').text(data);},
+			error: function(xhr) {student_confirm_result.css('color', '#950808').text(xhr.responseText);}
+		});
+	});
+</script>

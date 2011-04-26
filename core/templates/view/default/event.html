@@ -1,0 +1,38 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% block content %}
+<h1>{{ object.title }}</h1>
+<div style="font-size:0.9em;color: grey;padding-bottom:1.5em">{{ object.category }}</div>
+{% load pytils_dt %}
+
+{% if object.description %}
+<div class="description page" style="padding-bottom:1em">
+	{{ object.description }}
+</div>
+{% endif %}
+
+{% if object.get_images %}
+<div style="margin: -15px 10px; float: right; width: 160px; padding: 10px 15px; background-color: #DFE9F4">
+{#   <legend>Фото</legend> #}
+  {% for photo in object.get_images %}
+  <a href="{{ photo.image.url }}" class="thickbox" rel="event-{{ object.id }}-gallery"
+     title="{{ photo.title }}{% if photo.description %}. {{ photo.description }}{% endif %}">
+	<img border="0" src="{{ photo.thumbnail.url }}" class="photo page" alt="{{ photo.title }}" />
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="content page" style="padding-bottom: 1.5em">
+	{{ object.text|safe }}
+</div>
+
+<dt>Где:</dt>
+<dd>{{ object.place }}</dd>
+
+<dt>Когда: </dt>
+<dd>{{ object.date_start|ru_strftime:"%d %B %Y г."}} &mdash; {{object.date_end|ru_strftime:"%d %B %Y г."}}</dd>
+
+<dt>Контактная информация:</dt>
+<dd>{{ object.contact_name }}, <a href="mailto:{{object.contact_email}}">{{object.contact_email}}</a>, тел.: {{object.contact_phone}}.</dd>
+{% endblock %}

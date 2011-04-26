@@ -1,0 +1,20 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% block content %}
+<h2>{{ object.title }}</h2>
+
+
+{% load pytils_dt %}
+{% load nodes %}
+
+<a href="/portal/newsline/" style="float:right"><b>Поиск по архиву >>></b></a><br/>
+
+<table class="newsfeed">
+	{% nodes "sort_fields" "-date_published" "parents" object.get_absolute_url "types" "News" as news %}
+	{% for x in news %}
+	<tr><td class="news_line"><p id="headline">	<span>{% if x.get_front_image %}<img src="{{x.get_front_image.thumbnail.url}}" alt="{{x.get_front_image.title}}"/>{% endif %}</span>
+	  <b>{{ x.date_published|ru_strftime:"%d %B %Y" }}</b>&nbsp;<a href="{{ x.get_absolute_url }}"><b>{{ x.title }}</b></a>&nbsp;<span style="color:grey">({{x.category.name}})</span><br/>{{ x.description }}</p></td></tr>
+	{% endfor %}
+</table>
+<a href="/portal/newsline/" style="float:right"><b>Поиск по архиву >>></b></a><br/>
+{% endblock %}

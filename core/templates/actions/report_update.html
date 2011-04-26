@@ -1,0 +1,59 @@
+<style>
+table.result {
+	padding: 0;
+	margin: 0;
+	border-collapse: collapse;
+	width: 100%;
+	border: 1px solid gray;
+}
+.result td, .result th{
+	border: 1px solid gray;
+	border-collapse: collapse;
+	padding: 3px;
+	vertical-align: middle;
+}
+.result th {
+	background-color: #bbbbbb;
+}
+.result tr.gray {
+	background-color: #eeeeee;
+}
+.result tbody tr:hover {
+	cursor: pointer;
+	background-color: #dddddd
+}
+.result a {
+	color: #333;
+	text-decoration: none;
+}
+</style>
+<h1>Отчёт по обновлению страниц портала</h1>
+<br/>
+<table class='result'>
+	<thead>
+		<tr>
+			<th>#</th>
+			<th><a href="/portal/report_update/?order_by=1&direction={% if order_by == '1' %}{{direction|yesno:"0,1"}}{% else %}1{% endif %}">Раздел</a></th>
+			<th><a href="/portal/report_update/?order_by=2&direction={% if order_by == '2' %}{{direction|yesno:"0,1"}}{% else %}1{% endif %}">ФИО ответственного</a></th>
+			<th><a href="/portal/report_update/?order_by=3&direction={% if order_by == '3' %}{{direction|yesno:"0,1"}}{% else %}1{% endif %}">Должность</a></th>
+			<th><a href="/portal/report_update/?order_by=4&direction={% if order_by == '4' %}{{direction|yesno:"0,1"}}{% else %}1{% endif %}">Телефон</a></th>
+			<th><a href="/portal/report_update/?order_by=5&direction={% if order_by == '5' %}{{direction|yesno:"0,1"}}{% else %}1{% endif %}">Дата создания</a></th>
+			<th><a href="/portal/report_update/?order_by=6&direction={% if order_by == '6' %}{{direction|yesno:"0,1"}}{% else %}1{% endif %}">Дата последнего изменения</a></th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for r in resp %}
+		{% with r.base_object as obj %}
+		<tr onClick="window.open('{{obj.get_absolute_url}}');">
+			<td>{{forloop.counter}}</td>
+			<td>{{obj.title}}</td>
+			<td>{{r.user}}</td>
+			<td>{{r.position}}</td>
+			<td>{{r.telephone}}</td>
+			<td align='center'>{{obj.date_created|date:"d.m.Y H:i"}}</td>
+			<td align='center'>{{obj.date_modified|date:"d.m.Y H:i"}}</td>
+		</tr>
+		{% endwith %}
+		{% endfor %}
+	</tbody>
+</table>

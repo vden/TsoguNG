@@ -1,0 +1,34 @@
+<table class='request'>
+	<thead>
+	<tr>
+		<th>№</th>
+		<th>ID</th>
+		<th>Автор</th>
+		<th>Исполнитель</th>
+		<th>Статус</th>
+		<th>Дата создания</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for req in requests %}
+	<tr class="{% cycle '' 'gray' %}"
+		onclick="$.get('/tsogu_request/ajax/request_detail/',
+			{'id':{{req.id}}}, function(data) {
+			$('#request_content').html(data);
+			});">
+		<td>{{ forloop.counter }}</td>
+		<td>{{ req.id }}</td>
+		<td>{{ req.author }}</td>
+		<td>{{ req.executor }}</td>
+		<td>{{ req.status }}</td>
+		<td>{{ req.date_created|date:"d.m.Y" }}</td>
+	</tr>
+	{% endfor %}
+	</tbody>
+</table>
+
+<div class='right_align'>
+	<a class='local-link' href="javascript:;"
+		onclick="$('#request_content').load('/tsogu_request/ajax/request_add/');"
+		>Создать заявку</a>
+</div>

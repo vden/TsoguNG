@@ -1,0 +1,25 @@
+<p><label>Фамилия:</label>{{ user.last_name }}</p>
+<p><label>Имя:</label>{{ user.first_name }}</p>
+<p><label>Отчество:</label>{{ profile.middle_name }}</p>
+<p><label>email:</label>{{ user.email }}&nbsp;
+	{% if profile.is_email_confirmed %}
+	(подтвержден)
+	{% else %}
+	<a class='local-link' href="javascript:;" onclick="$('#profile_content').load('/userprofile/send_email_confirm/');">подтвердить</a>
+	{% endif %}
+</p>
+<p><label>Подпись:</label>{{ profile.subscription }}</p>
+<br/>
+<p>
+	<label>Студент:</label>{{ profile.student_id|yesno:"Да,Нет" }}
+	{% if not profile.student_id %}
+	&nbsp;<a class="local-link" href="javascript:;"
+		onclick="$('#student-confirm').toggle();"
+	>подтвердить статус</a>
+	{% include "profile/student_confirm.html" %}
+	{% endif %}
+</p>
+<br/>
+<a class='local-link' href="javascript:;"
+	onclick="$('#profile_content').load('/userprofile/edit/');">
+Редактировать профиль</a><br/>

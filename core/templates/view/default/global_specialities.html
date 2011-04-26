@@ -1,0 +1,216 @@
+{% load extra_api %}
+{% load cache %}
+{% load tsoguformat %}
+
+<style>
+#planpriema td, #planpriema th {
+	border: 1px solid #4369B5;
+	padding: 2px;
+	vertical-align: middle;
+	text-align: center;
+}
+#planpriema .inst {
+	background-color: #E2F0FE;
+}
+#planpriema thead {
+	background-color: #A5CBED;
+}
+#planpriema {
+	width:100%; 
+	border: 1px solid #4369B5; 
+	border-collapse: collapse;
+}
+#sf_block {
+	margin: 0.5em;
+	margin-left: 1.5em;
+	overflow: hidden;
+}
+#spec_photos {
+	margin: 0em;
+}
+#spec_photos img {
+	margin: 1em;
+	vertical-align: middle;
+	max-height: 300px;
+}
+#boss_photo {
+	margin-right: 1em;
+	max-height: 200px;
+	float:left;
+}
+</style>
+
+
+{% if request.GET.speciality %}
+{% cache 10 speciality request.GET.speciality %}
+
+{% gjson "http://std.tsogu.ru/speciality/speciality/" request.GET.speciality "/json/" as data %}
+<a name="top" href=""></a>
+<h1>{{ data.name }}</h1>
+<a href="." style="float:right;">Назад</a>
+
+<div id="spec_photos">
+{% for photo in data.photos %}
+	<img src="http://speciality.tsogu.ru{{ photo }}" alt="{{ data.name }}" />
+{% endfor %}
+</div>
+
+<div id="sf_block">
+	<b>Код:</b> {{ data.code }}<br/>
+	<b>Аббревиатура:</b> {{ data.short_name|default:"нет данных" }}<br/>
+	<b>Тип:</b> {{ data.type|default:"нет данных" }}<br/>
+</div>
+
+<h4>Выпускающая кафедра</h4>
+{% for kaf in data.subfaculties %}
+<div id="sf_block">
+	{% if kaf.boss_photo %}
+		<img alt="{{ kaf.boss }}" src="http://speciality.tsogu.ru{{ kaf.boss_photo }}" id="boss_photo" />
+	{% endif %}
+	<b>Название: </b> {{ kaf.name }}{% if kaf.short_name %} ({{ kaf.short_name }}){% endif %}<br/>
+	<b>ФИО зав. кафедрой: </b> {{ kaf.boss|default:"нет данных" }}<br/>
+	<b>Телефон: </b> {{ kaf.phone|default:"нет данных" }}<br/>
+	<b>Адрес: </b> {{ kaf.address|default:"нет данных" }}<br/>
+	<b>Электронный адрес: </b> {{ kaf.email|default:"нет данных"|urlize }}<br/>
+	<b>Ссылка на кафедру: </b> {{ kaf.link|default:"нет данных"|urlize }}<br/>
+</div>
+
+{% endfor %}
+
+<h4>Прием на специальность</h4>
+{% regroup data.plan|dictsort:"institute" by institute as plan %}
+<table id="planpriema">
+	<thead>
+		<th>Форма обучения</th>
+		<th>Срок обучения</th>
+		<th>Квалификация</th>
+		<th>Стоимость<br/>руб.</th>
+		<th>Кол-во <br/>бюджет. <br/>мест</th>
+		<th>Кол-во <br/>договор. <br/>мест</th>
+		<th>Кол-во <br/>поданных <br/>заявлений</th>
+		<th>Вступительные <br/>испытания</th>
+	</thead>
+{% for inst in plan %}
+	<tr class="inst"><td colspan="8">{{ inst.grouper }}</td></tr>
+	{% for pl in inst.list %}
+	<tr>
+		<td>{{ pl.form_education }}</td>
+		<td>{{ pl.period }}</td>
+		<td>{{ pl.qualification|default:"нет данных" }}</td>
+		<td>{{ pl.price|money|default:"---" }}</td>
+		<td>{{ pl.qty_state }}</td>
+		<td>{{ pl.qty_contract }}</td>
+		<td>{{ pl.qty_total }}</td>
+		<td>
+			{% regroup pl.exams by category as exams %}
+			{% for ex in exams %}
+				{% ifnotequal ex.grouper "медалист" %}
+				<a href="/entrant/rating/?spec={{ pl.id }}&category={% ifequal ex.grouper "договор" %}dogovor{% else %}konkurs{% endifequal %}&by_groupe=1">{{ ex.grouper }}</a>
+				({% for d in ex.list %}{{ d.disciplines|join:"/" }}{% if not forloop.last %}, {% endif %}{% endfor %})<br/>
+				{% endifnotequal %}
+			{% endfor %}
+		</td>
+		<!--	<td>{{ pl.qualification_block }}</td> -->
+		<!-- <td>{{ pl.path_a_sign }}</td> -->
+	</tr>
+	{% endfor %}
+{% endfor %}
+</table>
+
+<div id="sf_block">
+	<b>Объекты деятельности: </b> <p>{{ data.activity|default:"нет данных"|safe }}</p><br/>
+	<b>Возмoжности трудоустройства: </b> <p>{{ data.employment|default:"нет данных"|safe }}</p><br/>
+	<b>Будет знать: </b> <p>{{ data.knowledge|default:"нет данных"|safe }}</p><br/>
+	<b>Будет владеть: </b> <p>{{ data.skills|default:"нет данных"|safe }}</p><br/>
+	<b>Изучаемые дисциплины: </b> <p>{{ data.disciplines|default:"нет данных"|safe }}</p><br/>
+</div>
+
+
+<a href="#top" style="float:left;">Наверх</a>
+<a href="." style="float:right;">Назад</a>
+
+{% endcache %}
+{% else %}
+
+<style>
+#specfilter select {
+	width:300px;
+}
+#specfilter div {
+	margin:0.5em;
+}
+</style>
+
+<hr/>
+<form method="get" action="." id="specfilter">
+<table>
+  <tr>
+    <td>
+      <label for="edu_levels">Уровень образования:</label>
+    </td>
+    <td>
+      <select id="edu_levels" name="level">
+	<option id="level_all" value="">Все</option>
+	<option id="level_vpo" value="vpo">ВПО</option>
+	<option id="level_spo" value="spo">СПО</option>
+	<option id="level_npo" value="npo">НПО</option>
+      </select>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>
+      <label for="divisions">Подразделение:</label>
+    </td>
+    <td>
+      <select id="divisions" name="division">
+	<option id="division_all" value="">Все</option>
+	<option id="division_inst" value="inst">Только институты</option>
+	<option id="division_fil" value="fil">Только филиалы</option>
+	<option id="division_other" value="other">Кроме институтов и филиалов</option>
+
+{% comment %}
+{#% gjson "http://dict.tsogu.ru/api/inst/" as insts %#}
+	{% for inst in insts %}
+	<option id="division_{{ inst.pk }}" value="{{ inst.pk }}">{{ inst.fields.name }}</option>
+	{% endfor %}
+{% endcomment %}
+
+      </select>
+    </td>
+    <td>
+      <button type="submit">Искать</button>
+    </td>
+  </tr>
+</table>
+<hr/>
+</form>
+
+{% if request.GET.level %}
+<script language="javascript">
+	$('#level_{{ request.GET.level }}').attr("selected",true);
+</script>
+{% endif %}
+
+{% if request.GET.division %}
+<script language="javascript">
+	$('#division_{{ request.GET.division }}').attr("selected",true);
+</script>
+{% endif %}
+
+{% gjson "http://std.tsogu.ru/speciality/specfilter/json/?inst=" request.GET.division "&level=" request.GET.level as data %}
+{% regroup data|dictsort:"institute" by institute as data %}
+
+{% for inst in data %}
+<div>
+	<h2>{{ inst.grouper }}</h2>
+	<a class="thickbox" href="http://www.tsogu.ru/media/img/institutes/{{ inst.list.0.institute_id }}-st.jpg"><img src="http://www.tsogu.ru/media/img/institutes/{{ inst.list.0.institute_id }}-t.jpg" alt="" /></a>
+	<ul>
+		{% for spec in inst.list|dictsort:"name" %}
+		<li><a href="?speciality={{ spec.id }}">{{ spec.name }}</a> ({{ spec.type }}, {{ spec.short_name}}, {{ spec.code }})</li>
+		{% endfor %}
+	</ul>
+</div>
+{% endfor %}
+
+{% endif %}

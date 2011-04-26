@@ -1,0 +1,9 @@
+<span style="background: url('/media/img/info_16x16.png'); float:right; width:16px; height:16px;" 
+	onClick="var position = $(this).position(); $('#context_{{ object.slug }}_help').css('top',position.top); $('#context_{{ object.slug }}_help').css('left',position.left-502); $('#context_{{ object.slug }}_help').toggle();"></span>
+<div class="ui-corner-all" id="context_{{ object.slug }}_help" style="width:500px; background:whitesmoke; position:absolute; display:none; border: 1px solid #4369B5; z-index:10;">
+	<span style="padding:1em;"><b>{{ object.title }}</b></span>
+	<div style="padding: 0 1em;">
+		{{ object.text }}
+	</div>
+	{% if object.link %}<a href="{{ object.link }}" style="margin:0.5em; float:right;">Подробнее...</a>{% endif %}
+</div>

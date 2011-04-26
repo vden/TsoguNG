@@ -1,0 +1,33 @@
+{% extends "forms/default/wrapper.html" %}
+{% load cache thumbnail %}
+{% load nodes %}
+
+{% block content %}
+<h1>{{ object.title }}</h1>
+
+<div class="content page" style="margin: 2em 0;">
+	{{ object.text|safe }}
+</div>
+
+<div>
+{% nodes "types" "Photo" "parents" object.get_absolute_url as photos %}
+
+{% for photo in photos %}
+	<div style="margin:5px; padding:2px; float:left; height:242px; width:242px; border: 1px solid gray; text-align:center;">
+		<a href="{{ photo.url }}" class="thickbox" rel="news-{{ object.id }}-gallery" 
+			title="{{ photo.title }}{% if photo.description %}. {{ photo.description }}{% endif %}">
+			<img id="photo_{{ photo.id }}" border="0" src="{% thumbnail photo.image.name 240x240 %}" 
+				class="photo page" alt="{{ photo.title }}" style="margin:0; max-height:240px" />
+		</a>
+	</div>
+	<script>
+		$('#photo_{{ photo.id }}').css('margin-top',(240-$('#photo_{{ photo.id }}').height())/2);
+	</script>
+{% endfor %}
+
+</div>
+
+<div class="documentByLine" style="clear:both;padding-top:20px">
+	<div style="font-style:italic">{{ object.author.user_profile.subscription }}</div>
+</div>
+{% endblock %}

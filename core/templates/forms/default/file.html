@@ -1,0 +1,20 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% load help %}
+
+{% block content %}
+{{ form.media }}
+<form action="" method="post" enctype="multipart/form-data">
+	{% for field in form %}
+	<div class="field {% if field.errors %} error {% endif %}">
+		<label for="{{ field.auto_id }}" style="float:left;">{{ field.label }}</label>
+		{% help "field" %}
+		{% if field.help_text %}<br/><div class="formHelp">{{ field.help_text }}</div>{% endif %}
+		<span style="color:red; float:right;">{{ field.errors.as_text }}</span><br/>
+		<div style="overflow:hidden">{{ field }}</div>
+	</div>
+	{% endfor %}
+	<input type="hidden" name="form_name" value="{{form_name}}" />
+	<input type="submit" value="Сохранить" />
+</form>
+{% endblock %}

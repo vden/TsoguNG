@@ -1,0 +1,19 @@
+<div class="banner_{{ group }}" style="width:95%;text-align:center;padding:10px 3px">
+  {% for b in banners %}
+  <div style="padding: 2px;{% if not vert %}display:inline;{% endif %}">
+    {% if b.is_flash %}
+    <object id="{{b.id}}_banner" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab">
+      <param value="High" name="Quality"/>
+      <param value="-1" name="Menu"/>
+      <param value="always" name="AllowScriptAccess"/>
+      <embed pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" name="{{ b.id }}_banner" 
+	     {% if w and h %} width="{{w}}" height="{{h}}" {% endif %} quality="high" src="{{b.url}}"/>
+</object>
+    {% else %}
+    <a href="{{b.link}}" {% if b.new_window %}target="_blank"{% endif %}>
+      <img src="{{b.url}}" alt="{{b.title}}" {% if w and b.resize %} width="{{w}}" {% endif %} />
+    </a>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>

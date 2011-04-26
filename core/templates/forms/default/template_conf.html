@@ -1,0 +1,107 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% block content %}
+<style type="text/css">
+	.block-wrapper {
+		margin: 5px;
+		padding: 5px;
+		border: 1px #ccc dashed;
+		overflow: hidden;
+	}
+
+	.block-wrapper h3 {
+		margin: 0;
+		padding: 0;
+		float: left;
+	}
+
+	#to-default {
+		float: right;
+	}
+
+	.block-wrapper input[type=checkbox],
+	.block-wrapper select {
+		float: right;
+	}
+	.block-wrapper select {
+		width: 200px;
+	}
+
+	.enable {
+		border: 1px #666 solid;
+	}
+</style>
+<h1>Настройка шаблона</h1>
+<div class="block-wrapper enable">
+	<h3>Заголовок</h3>
+</div>
+
+<form action="" method="POST">
+	<div class='block-wrapper {{ config.tags|yesno:"enable," }}'>
+		<h3><label for="tempate_tags">Тэги</label></h3>
+		<input id="tempate_tags" name="tags" type='checkbox' {{ config.tags|yesno:"checked," }}/>
+	</div>
+
+	<div class='block-wrapper {{ config.description|yesno:"enable," }}'>
+		<h3><label for="tempate_description">Описание</label></h3>
+		<input id="tempate_description" name="description" type='checkbox' {{ config.description|yesno:"checked," }}/>
+	</div>
+
+	<div class='block-wrapper {{ config.text|yesno:"enable," }}'>
+		<h3><label for="tempate_text">Текст</label></h3>
+		<input id="tempate_text" name="text" type='checkbox' {{ config.text|yesno:"checked," }}/>
+	</div>
+
+	<div class='block-wrapper {{ config.photo|yesno:"enable," }}'>
+		<h3><label for="tempate_photo">Фото</label></h3>
+		<select id="tempate_photo" name="photo">
+			<option {% if not config.photo %}selected{% endif %} value="">---------</option>
+			<option {% if config.photo == "block" %}selected{% endif %} value="block">Блок справа</option>
+			<option {% if config.photo == "albom" %}selected{% endif %} value="albom">Фотоальбом</option>
+			<option {% if config.photo == "gallery" %}selected{% endif %} value="gallery">Фотогаллерея(плитка)</option>
+		</select>
+	</div>
+
+	<div class='block-wrapper {{ config.signature|yesno:"enable," }}'>
+		<h3><label for="tempate_signature">Подпись</label></h3>
+		<input id="tempate_signature" name="signature" type='checkbox' {{ config.signature|yesno:"checked," }}/>
+	</div>
+
+	<div class='block-wrapper {{ config.content|yesno:"enable," }}'>
+		<h3><label for="tempate_content">Список содержимого</label></h3>
+		<select id="tempate_content" name="content">
+			<option {% if not config.content %}selected{% endif %} value="">---------</option>
+			<option {% if config.content == "with_date" %}selected{% endif %} value="with_date">С датой публикации</option>
+			<option {% if config.content == "without_date" %}selected{% endif %} value="without_date">Без дат публикации</option>
+			<option {% if config.content == "with_image" %}selected{% endif %} value="with_image">С картинкой</option>
+		</select>
+	</div>
+
+	<div class='block-wrapper {{ config.links|yesno:"enable," }}'>
+		<h3><label for="tempate_links">Список ссылок</label></h3>
+		<input id="tempate_links" name="links" type='checkbox' {{ config.links|yesno:"checked," }}/>
+	</div>
+
+	<div class='block-wrapper {{ config.files|yesno:"enable," }}'>
+		<h3><label for="tempate_files">Список файлов</label></h3>
+		<input id="tempate_files" name="files" type='checkbox' {{ config.files|yesno:"checked," }}/>
+	</div>
+
+	<div class='block-wrapper {{ config.comments|yesno:"enable," }}'>
+		<h3><label for="tempate_comments">Комментарии</label></h3>
+		<input id="tempate_comments" name="comments" type='checkbox' {{ config.comments|yesno:"checked," }}/>
+	</div>
+
+	<br/>
+	<input type="submit" value="Сохранить настройки"/>
+	<a id="to-default" class="local-link" href="?default">Настройки по умолчанию</a>
+</form>
+<script type="text/javascript">
+	$(".block-wrapper input").click(function() {
+			$(this).parent().toggleClass('enable');
+		});
+	$(".block-wrapper select").change(function() {
+			$(this).parent().toggleClass('enable', this.value && !$(this).hasClass('enable'));
+		});
+</script>
+{% endblock %}

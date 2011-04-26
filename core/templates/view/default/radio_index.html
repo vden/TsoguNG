@@ -1,0 +1,85 @@
+{% load pytils_dt %}
+{% load page_include %}
+
+<h1>Радио ТюмГНГУ</h1>
+
+<div class="top-kvartal ui-corner-all">
+
+
+<table style="width:100%">
+<col width="80%"><col>
+<tr><td>
+<h2 style="font-size:1.5em">Сейчас в эфире</h2>
+<div id="flashcontent" width="100%">Для прослушивания композиции вам необходим <a href="http://www.adobe.com/products/flashplayer/" rel="external">Flash-player</a> версии 9 и выше.</div>
+	<script type="text/javascript">
+	  var flashvars={};
+	  flashvars.usefullscreen="false";
+	  flashvars.skin="{{MEDIA_URL}}bluemetal.swf";
+	  var host="217.116.51.36";
+	  var params={};
+	  params.allowfullscreen="false";
+	  params.wmode="transparent";
+	  var fn=";stream.mp3";
+	  params.autostart="false";
+	  var port="8005";
+	  params.allowscriptaccess="always";
+	  var rnd="&12514973724";
+	  flashvars.autostart="false";
+	  flashvars.file="http://"+host+":"+port+"/"+fn+rnd;
+	  var attributes={};
+	  attributes.id="flashcontent";
+	  attributes.name="flashcontent";
+	  swfobject.embedSWF("{{MEDIA_URL}}player.swf","flashcontent","95%","35","9.0.0","expressInstall.swf", flashvars, params, attributes);
+	</script>
+
+<div style="font-size:1.1em;padding-left:0.5em">
+<a href="http://radio.tsogu.ru:8005/">Слушать в Winamp</a> <br/><a href="mms://radio.tsogu.ru:8005/">Слушать в Windows Media Player</a></div><br/>
+
+</td><td style="text-align:center">
+<br/>
+<div>
+	<img src="{{MEDIA_URL}}img/radio.jpg" width="120" height="120" title="radio logo" class="bordered-img"><br/>
+</div>
+</td></tr>
+</table>
+</div>
+
+{% load nodes %}
+
+{% nodes "types" "AudioFile" "states" "опубликованный" "sort_fields" "-date_published" "limit" "5" "parents" "/news/radio" "cascade" "True" as last_audio %}
+{% nodes "types" "AudioFile" "states" "опубликованный" "parents" "/news/radio/audionews" "sort_fields" "-date_published" "limit" "5" as audionews %}
+
+<h2>Выпуски новостей университета</h2>
+{% for audio in audionews %}
+<div style="padding:3px 0 3px 6px"><b>{{audio.date_published|ru_strftime:"%d %B"}}</b>&nbsp;<a href="{{audio.get_absolute_url}}">{{audio.title}}</a></div>
+{% endfor %}
+
+<div style="font-size:160%;padding-bottom:0.3em;padding-top:0.4em"><a id="llink" class="local-link-active" href="javascript:;" onClick="$('#popular_audio').hide();$('#last_audio').show();$('#llink').attr('class', 'local-link-active');$('#plink').attr('class', 'local-link')">Новые передачи</a>&nbsp;<a id="plink" class="local-link" href="javascript:;" onClick="$('#last_audio').hide();$('#popular_audio').show();$('#llink').attr('class', 'local-link');$('#plink').attr('class', 'local-link-active')">Популярные передачи</a></div>
+
+<div id="last_audio">
+{% for audio in last_audio %}
+<div style="padding:3px 0 3px 6px"><b>{{audio.date_published|ru_strftime:"%d %B"}}</b>&nbsp;<a href="{{audio.get_absolute_url}}">{{audio.title}}</a></div>
+{% endfor %}
+</div>
+
+<div id="popular_audio" style="display:none">
+{% nodes "types" "AudioFile" "states" "опубликованный" "sort_fields" "-rating" "limit" "5" "parents" "/news/radio/" "cascade" "True" as rated_audio %}
+{% for audio in rated_audio %}
+<div style="padding:3px 0 3px 6px"><b>{{audio.date_published|ru_strftime:"%d %B"}}</b>&nbsp;<a href="{{audio.get_absolute_url}}">{{audio.title}}</a> (рейтинг: {{audio.rating}})</div>
+{% endfor %}
+</div>
+
+<h2><a href="javascript:;" class="local-link" onClick="$('#reqtd').toggle();">Заказ песни на радио</a></h2>
+<table style="border:0px">
+<tr><td style="vertical-align:top;width:60%;padding-right:1.5em;display:none"  id="reqtd">
+<form action="/portal/songrequest/" onSubmit="return false;" name="request_form" method="POST">
+<table>
+<tr><td>Ваши имя и фамилия: </td><td><input name="req_name" /></td><td>Группа/должность: </td><td><input name="req_group"/></td></tr>
+<tr><td>Для кого песня: </td><td colspan="3"><input name="req_addr" style="width:100%"/></td></tr>
+<tr><td>Название и исполнитель песни:</td><td colspan="3"><input name="req_song" style="width:100%"/></td></tr>
+<tr><td>Ваше сообщение: </td><td colspan="3"><textarea name="req_text" ></textarea></td></tr>
+</table>
+<input type="button" onClick="if(/*checkValid*/ 1){request_form.submit();}" value="Заказать!"/>
+</form>
+</td>
+</tr></table>

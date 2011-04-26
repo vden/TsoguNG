@@ -1,0 +1,49 @@
+<style>
+.objecttoolbar {
+	background: #A5CBED;
+	padding: 0.5em 1em;
+	margin-bottom: 1.5em;
+}
+.objecttoolbar .tabs {
+}
+.objecttoolbar hr {
+	color: whitesmoke;
+}
+.contentActions {
+	background-color: #A5CBED;
+	border: 0;
+}
+.objectTabs a {
+	margin-right: 1em;
+	color: #333;
+}
+.objectTabs span {
+	margin-right: 1em;
+	font-weight: bold;
+}
+.objectTabs {
+	margin-right:16px;
+}
+.iconsBlock {
+	
+	float:right;
+}
+.iconsBlock a {
+	margin:0;
+}
+
+.contentActions li {
+	border: 0;
+}
+.cssmenu {
+}
+.actionPlural {
+
+}
+</style>
+
+{% load objecttoolbar %}
+{% objecttoolbar object %}
+
+{% block content %}
+{% endblock %}

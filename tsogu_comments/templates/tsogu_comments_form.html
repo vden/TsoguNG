@@ -1,0 +1,70 @@
+<style>
+	#comment_form div.help {
+		margin: 10px 0;
+	}
+	#comment_form .help {
+		font-style: italic;
+	}
+	#comment_form .field-wrapper {
+		margin: 3px 0;
+	}
+	#comment_form input[type=text] {
+		width: 180px;
+	}
+	#comment_form label{
+		font-size: 120%;
+	}
+	#comment_form textarea{
+		height: 100px;
+	}
+	#comment_form ul.errorlist {
+		list-style: square outside none;
+	}
+	#comment_form ul.errorlist li{
+		display: inline;
+		background: none;
+		color: red;
+		border: none;
+	}
+</style>
+<form action="/comments/add/" method="post" id="comment_form">
+	<div class="help">Комментарии публикуются после проверки модератором.</div>
+	{{ form.non_field_errors }}
+	{% for hidden in form.hidden_fields %}
+		{% if hidden.errors %}
+		<div>{{ hidden.label }}:
+			{{ hidden.errors }}
+		</div>
+		{% endif %}
+	{% endfor %}
+	<table width="100%">
+		<col width="50%">
+		<col width="50%">
+		<tr>
+			<td align="left">{{ form.username.label_tag }}: {{ form.username }}{{ form.username.errors }}</td>
+			<td align="right">{{ form.email.label_tag }}: {{ form.email }}{{ form.email.errors }}</td>
+		</tr>
+		<tr><td colspan=2>{{ form.text }}{{ form.text.errors }}</td></tr>
+	</table>
+	{% for hidden in form.hidden_fields %}
+	{{ hidden }}
+	{% endfor %}
+	<span class="help">Клавиша &laquo;Enter&raquo; отправляет комментарий на сервер.</span>
+	<input style="float: right;" type="submit" value="Отправить"/>
+</form>
+<script>
+	$('#comment_form').submit(function() {
+		var content = $(this).parent();
+		var loading = "<div class='loading'>Идёт загрузка...</div>";
+		$.ajax({
+			url: '/comments/add/',
+			type: 'POST',
+			data: $(this).serialize(),
+			begoreSend: function() {content.html(loading);},
+			success: function(data) {content.html(data);},
+			error: function() {content.text("Произошла ошибка при загрузке формы");}
+		});return false;
+	}).keydown(function(event) {
+		if (event.keyCode == '13') {$(this).submit();}
+	});
+</script>

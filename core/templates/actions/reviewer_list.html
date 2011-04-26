@@ -1,0 +1,22 @@
+{% load strlimit %}
+
+<h1>Редакторский лист</h1>
+
+{% if obj_list %}
+  <div style="width:100%; background: #7595BF; padding:1px 5px; color: #FFFFFF;">
+    <span>Объекты</span>
+    <div style="float:right; width:10em; text-align:center;">Дата модификации</div>
+    <div style="float:right; width:10em; text-align:center;">Автор</div>
+  </div>
+  {% for o in obj_list %}
+    <div style="width:100%; background:{% cycle '#fff' '#ddf' %}; padding:1px; vertical-align:middle;">
+	    {{ forloop.counter }}.&nbsp;{{ o.get_class_name }}:&nbsp;<a href="{{ o.get_absolute_url }}" target="_blank">{% firstof o.title|strlimit o.slug %}</a>
+      <div style="float:right; width:10em; text-align:center;">
+        {{ o.date_modified|date:"Y-m-d H:i" }}
+      </div>
+      <div style="float:right; width:10em; text-align:center;">{{ o.config.last_editor }}</div>
+    </div>
+  {% endfor %}
+{% else %}
+  <h3 style="margin: 5px;">Обновлений нет</h3> 
+{% endif %}

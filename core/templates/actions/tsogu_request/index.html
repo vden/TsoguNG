@@ -1,0 +1,10 @@
+<h2>Система заявок</h2>
+<div class='right_align'>
+	<a class='local-link' href="javascript:;"
+		onclick="
+		$('#request_content').html('...Идёт загрузка...').load('/tsogu_request/ajax/request_update/');"
+		>Обновить список заявок</a>
+</div>
+<div id='request_content'>
+	{% include "actions/tsogu_request/list.html" %}
+</div>

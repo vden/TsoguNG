@@ -1,0 +1,29 @@
+<div class="left-box">
+<!-- <h5>Поиск по сайту</h5> -->
+
+<div align="left" id="portlet">
+    <form name="searchform" method="GET"
+          action="/portal/search/">
+        <label for="searchGadget" class="hiddenStructure">Поиск</label>
+
+        <table border="0">
+
+        <tr>
+        <th>
+        <input id="searchGadget" name="search_word" onKeyUp="search_lookup(this.value)"
+               type="text" alt="Поиск" title="Поиск" onBlur="$('#suggestions').fadeOut()"
+               style="width : 156px; height : 20px"
+               accesskey="s" class="visibility:visible"
+               tabindex="10001" value="{{ search_word }}"/>
+	<div id="suggestions" style="z-index:1"></div>
+	
+        </th>
+        <th>
+        <input class="searchButton" type="submit" value="Поиск" accesskey="accesskeys-search" />
+        </th>
+        </tr>
+        </table>
+
+    </form>
+</div>
+</div> 		

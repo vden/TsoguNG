@@ -1,0 +1,12 @@
+{% load pytils_dt %}
+{% load nodes %}
+
+{% nodes "types" "Link" "parents" object.get_absolute_url "sort_fields" "-date_published" "states" "опубликованный" as links %}
+{% if links %}
+<div><br/>
+	<h4 style="padding-bottom:0.5em">Ссылки по теме:</h4>
+	{% for link in links %}
+	<div style="padding-left:1em">{{ link.url|urlize }} &mdash; {{ link.title }}, {{ link.date_published|ru_strftime:"%d.%m.%Y" }}</div>
+	{% endfor %}
+</div>
+{% endif %}

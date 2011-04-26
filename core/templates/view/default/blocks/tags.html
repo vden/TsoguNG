@@ -1,0 +1,4 @@
+{% load pytils_dt %}
+<div>
+	<b>{{ object.date_published|ru_strftime:"%d %B" }}</b>, {{object.tags.all|join:", " }}
+</div>

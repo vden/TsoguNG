@@ -1,0 +1,28 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% load pytils_dt %}
+{% load show_config %}
+{% load nodes %}
+{% load cache thumbnail %}
+
+{% block content %}
+<h1>{{object.title}}</h1>
+
+<div class="description">
+	{{ object.description }}
+</div>	
+
+<table class="newsfeed">
+	{% nodes "types" "VideoFile" "states" "опубликованный" "sort_fields" "-date_published" "parents" object.get_absolute_url as data %}
+	{% for x in data %}
+	<tr><td class="news_line"><p id="headline">	<span>{% if x.preview %}<img src="{{x.get_absolute_url}}image/medium/1/" alt="{{x.title}}"/>{% endif %}</span>
+	  <b>{{ x.date_published|ru_strftime:"%d %B %Y г." }}</b>&nbsp;<a href="{{ x.get_absolute_url }}"><b>{{ x.title }}</b></a><br/>{{ x.description }}
+
+	  {% show_config x %}
+
+	  {% load tsogu_comments %}
+	  <br/><i>Комментариев: {% comments_count x %}</i>
+	</p></td></tr>
+	{% endfor %}
+</table>
+{% endblock %}

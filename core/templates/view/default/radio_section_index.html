@@ -1,0 +1,28 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% load pytils_dt %}
+{% load nodes %}
+{% load show_config %}
+
+{% block content %}
+<h1>{{object.title}}</h1>
+
+<div class="description">
+	{{ object.description }}
+</div>	
+
+<table class="newsfeed">
+	{% nodes "sort_fields" "-date_published" "parents" object.get_absolute_url as news %}
+	{% for x in news %}
+	<tr><td class="news_line" style="padding-top:0.6em;padding-bottom:0.6em;"><p id="headline">
+	  <b>{{ x.date_published|ru_strftime:"%d %B %Y г." }}</b>&nbsp;<a href="{{ x.get_absolute_url }}"><b>{{ x.title }}</b></a><br/>{{ x.description }}
+
+	  {% show_config x %}
+
+	  {% load tsogu_comments %}
+	  <br/><i>Комментариев: {% comments_count x %}</i>
+
+	</p></td></tr>
+	{% endfor %}
+</table>
+{% endblock %}

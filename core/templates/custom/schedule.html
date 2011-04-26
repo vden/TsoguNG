@@ -1,0 +1,53 @@
+{% load pytils_dt %}
+
+<script>
+function getGroups(val) {
+$.getJSON(
+   "/portal/schedule_groups/?inst="+val,
+   function(result){
+     $('#groups option').remove()
+     $.each(result.groups, function(i, item) {
+       $('#groups').append('<option value="'+item['id']+'">'+item['name']+'</option>')
+     } )
+     $('#show_button').removeAttr('disabled')
+  }
+)
+}
+</script>
+
+<div class="box"><a name="schedule"></a><h5>Расписание</h5></div>
+<div style="width:100%;  margin-bottom:1em;">
+	Осенний семестр 2010 г. {{ wk }}
+  <form name="schedule_form" action="?" onSubmit="return false;">
+    <select name="institute" onchange="getGroups(this.value);">
+      <option value="-1" selected="selected">-институт-</option>
+      {% for i in institutes %}
+      <option value="{{i.id}}">{{i.label}}</option>
+      {% endfor %}
+
+    </select>
+
+    <select name="groups" id="groups">
+      <option value="-1" selected="selected">-группа-</option>
+
+      {% for i in groups %}
+      <option value="{{i.id}}">{{i.name}}</option>
+      {% endfor %}
+
+    </select>
+    
+    <input id="show_button" type="button" value="Показать" onClick="window.open('http://app.tsogu.ru/shedule_new/bin/groups.py?act=show&sgroup='+$('#groups option:selected').val())" disabled="disabled">
+  </form><br/>
+
+<a href="javascript:;" onClick="window.open('http://app.tsogu.ru/shedule_new/bin/preps.py');">для преподавателей</a>
+<br/>
+<a href="javascript:;" onClick="window.open('http://app.tsogu.ru/shedule_new/bin/auds.py');">по аудиториям</a>
+<br/>
+<a href="javascript:;" onClick="window.open('http://app.tsogu.ru/shedule_new/bin/inst.py');">печатное для институтов</a>
+<br/>
+<a href="http://www.tsogu.ru/media/files/2010/10_13/raspisanie-na-sajt.pdf" target="_blank">информационно-библиографическая культура</a>
+
+    
+
+</div>
+</div>

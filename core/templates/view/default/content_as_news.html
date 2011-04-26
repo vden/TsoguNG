@@ -1,0 +1,39 @@
+{% extends "forms/default/wrapper.html" %}
+{% load cache thumbnail %}
+
+{% block content %}
+<h2>{{ object.title }}</h2>
+
+<div class="description page">
+	{{ object.description }}
+</div>
+<hr/>
+
+<div class="content page" style="border-bottom: 1px dashed #cccccc;">
+	{{ object.text|safe }}
+</div>
+<br/>
+
+{% load nodes %}
+{% load pytils_dt %}
+{% if object.config.sort_field_ %}
+	{% nodes "parents" object.get_absolute_url "sort_fields" object.config.sort_field_ "for_user" "True" "states" "опубликованный" as objs %}
+{% else %}
+	{% nodes "parents" object.get_absolute_url "sort_fields" "position" "for_user" "True" "states" "опубликованный" as objs %}
+{% endif %}
+
+{% for x in objs %}
+<div style="border-bottom: 1px dashed #cccccc;">
+<table width="100%">
+	<tr><td><p align="justify" id="headline">
+		<span>{% if x.get_front_image %}<img src="{% thumbnail x.get_front_image.image.name 160x160 crop %}" alt="{{x.get_front_image.title}}"/>{% endif %}</span>
+		<!--
+		<b>{{x.date_published|ru_strftime:"%d %B"}}</b>&nbsp;&nbsp;
+		-->
+		<a href="{{x.get_absolute_url}}">{{x.title}}</a><br/><br/>
+		<span>{{x.description}}</span>
+	</p></td></tr>
+</table>
+</div>
+{% endfor %}
+{% endblock %}

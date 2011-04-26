@@ -1,0 +1,52 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% load pytils_dt %}
+
+{% block content %}
+{% if object.type == "News" %}
+<a id="print-link" class="local-link" style="float: right;" href="{{ object.get_absolute_url }}act/print_form/" target="_blank">Версия для печати</a>
+{% endif %}
+<h1>{{ object.title }}</h1>
+
+{% if template_config.tags %}
+	{% include "view/default/blocks/tags.html" %}
+{% endif %}
+
+{% if template_config.photo == "block" %}
+	{% include "view/default/blocks/photo.html" %}
+{% endif %}
+
+{% if template_config.description %}
+	{% include "view/default/blocks/description.html" %}
+{% endif %}
+
+{% if template_config.text %}
+	{% include "view/default/blocks/text.html" %}
+{% endif %}
+
+{% if template_config.photo and template_config.photo != "block" %}
+	{% include "view/default/blocks/photo.html" %}
+{% endif %}
+
+{% if template_config.signature %}
+	{% include "view/default/blocks/signature.html" %}
+{% endif %}
+
+{% if template_config.content %}
+	{% include "view/default/blocks/content.html" %}
+{% endif %}
+
+{% if template_config.links %}
+	{% include "view/default/blocks/links.html" %}
+{% endif %}
+
+{% if template_config.files %}
+	{% include "view/default/blocks/files.html" %}
+{% endif %}
+
+{% if template_config.comments %}
+	{% include "view/default/blocks/comments.html" %}
+{% endif %}
+
+<div style="clear:both;"></div>
+{% endblock %}

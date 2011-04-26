@@ -1,0 +1,18 @@
+{% load cache thumbnail %}
+
+<h1 style="display:inline">  Фотолента за последний месяц </h1> <span style="padding-left: 5%">{% ifequal format "small" %}<a href="/portal/photoline/?format=medium">крупнее</a>{% else %}крупнее{% endifequal %}</span>&nbsp;<span>{% ifnotequal format "small" %}<a href="/portal/photoline/?format=small">мельче</a>{% else %}мельче{% endifnotequal %}</span>
+<br/>
+<br/>
+{% load pytils_dt %}
+
+<div><!-- style="margin: -15px 0px 5px 5px; float: right; width: 162px; padding: 0 15px 15px 15px; background-color: #DFE9F4">-->
+{% for photo in imgs %}
+  <div style="margin:0px; padding:0px 1px 1px 0px; float:left;">
+  <a href="{{ photo.parent.get_absolute_url }}" 
+     title="{{photo.parent.date_published|ru_strftime:"%d %B"}}. {{ photo.parent.title }}{% if photo.parent.description %}.
+ {{ photo.parent.description }}{% endif %}">
+	<img border="0" width="{{ x }}" height="{{ y }}" src="{% ifequal format 'small' %}{% thumbnail photo.image.name 80x80 crop %}{% else %}{% thumbnail photo.image.name 160x160 crop %}{% endifequal %}" class="photo page" alt="{{ photo.title }}" style="margin:0px; max-height:240px; border: 0px !important" />
+  </a>
+  </div>
+  {% endfor %}
+</div>

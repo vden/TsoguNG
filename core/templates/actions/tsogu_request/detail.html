@@ -1,0 +1,65 @@
+<h3>Заявка #{{ req.id }}({{ req.status }})</h3>
+<br/>
+<p>
+	<label>Заголовок:</label>
+	<span>{{req.title}}</span>
+</p>
+<p>
+	<label>Автор:</label>
+	<span>{{req.author.username}}({{req.author.email}})</span>
+</p>
+<p>
+	<label>Исполнитель:</label>
+	<span>{{req.executor.username}}({{req.executor.email}})</span>
+</p>
+<p>
+	<label>Дата создания:</label>
+	<span>{{req.date_created|date:"d.m.Y"}}</span>
+</p>
+<p>
+	<label>Тип:</label>
+	<span>{{req.is_difficult|yesno:"сложная,простая"}}</span>
+</p>
+<br/>
+<label>Текст:</label>
+<div id='request_text'>{{ req.text|linebreaksbr }}</div>
+<p>
+	<label>Приложенные файлы:</label>
+	<ul>
+	{% for file in req.files %}
+		<li><a href="/media/files/{{file.path}}">{{file.path}}</a></li>
+	{% endfor %}
+	</ul>
+</p>
+<br/>
+<h3>{{req.changes|yesno:"История изменений:,Изменений нет"}}</h3>
+{% for change in req.changes %}
+<div class="request_change">
+	<p><label>Изменение {{change.date_change|date:"d.m.Y H:i"}} от 
+		{{change.author.username}}({{change.author.email}})
+	</label></p>
+	{% if change.text %}
+	<ul>
+		{{change.text|safe}}
+	</ul>
+	{% endif %}
+	{% if change.comment %}
+	<label>Комментарий:</label>
+	<div>{{change.comment|linebreaksbr}}</div>
+	{% endif %}
+</div>
+{% endfor %}
+{% ifequal req.executor request.user %}
+<h3>Добавить изменение:</h3>
+<form id="request_add_change">
+	{{form.as_p}}
+<div class='right_align'>
+	<a class='local-link' href="javascript:;"
+		onclick=" $('#request_content').load('/tsogu_request/ajax/request_detail/',
+			{'comment':$('#id_comment').val(),
+			'id':{{req.id}},
+			'status':$('#id_status').val()});">
+		Добавить изменение</a>
+</div>
+</form>
+{% endifequal %}

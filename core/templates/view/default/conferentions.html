@@ -1,0 +1,31 @@
+<h2>Конференции по плану ТюмГНГУ</h2>
+
+{% load nodes %}
+{% nodes "types" "Event" "parents" object.get_absolute_url "states" "опубликованный" "sort_fields" "date_published" as events %}
+
+{% load date_between %}
+<br/>
+<table border="1" cellspacing="0" cellpadding="2" style="border-collapse:collapse;border:1px solid black">
+<col width="20%"><col width="40%"><col>
+<thead>
+<td><b>Даты проведения</b></td>
+<td><b>Название</b></td>
+<td><b>Место проведения, контактные данные</b></td>
+</thead>
+<tbody>
+{% for event in events %}
+<tr>
+<td>{% date_between event.date_start event.date_end 0 1 %}</td>
+<td><a href="{{event.get_absolute_url}}">{{event.title}}</a></td>
+<td>{{ event.place }}<br/>
+  {% if event.contact_name %}Контактное лицо: {{event.contact_name}}<br/>{% endif %}
+  {% if event.contact_email %}Контактный e-mail: {{event.contact_email|urlize}}<br/>{% endif %}
+  {% if event.contact_phone %}Контактный телефон: {{event.contact_phone}}<br/>{% endif %}
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+
+

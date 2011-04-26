@@ -1,0 +1,35 @@
+#portal-columns {
+    width: 1000px;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+#portal-column-one {
+    margin: 0px;
+    vertical-align: top;
+    width: 19%;
+}
+
+#portal-column-content {
+    vertical-align: top;
+    margin: 0;
+    padding: 0;
+}
+
+#portal-column-two {
+    margin: 0;
+    vertical-align: top;
+    width: 22%;
+}
+/* Padding for the columns */
+#portal-column-one .visualPadding {
+    padding: 0em 0em 0em 0em;
+}
+#portal-column-content .visualPadding {
+    padding: 0em 0em 0em 0em;
+}
+#portal-column-two .visualPadding {
+    padding: 0em 0em 0em 0em;
+}
+
+/*  */

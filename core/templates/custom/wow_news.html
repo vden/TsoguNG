@@ -1,0 +1,23 @@
+{% load pytils_dt %}
+{% load objects_by_tag %}
+{% objects_by_tag "/news/university/" "65 лет (на главную)" as wow_news %}
+<div style="height:10px;background:#ccc url({{MEDIA_URL}}img/lenta.gif) repeat-x;"></div>
+<br/>
+<div>
+	<img style="margin: 0 10px 10px 0;float:left;" src="{{ MEDIA_URL }}img/znamja-pobedy.gif" alt="Знамя победы"/>
+	<h2 style="margin:0; padding:0;" class="h2menu">1418. Дни и ночи войны.</h2>
+	<div style="margin:10px 0;">ТюмГНГУ открывает цикл публикаций, посвященных 65-летию Победы в Великой Отечественной войне. Своими воспоминаниями поделятся сами победители, фронтовики. Кроме того, студенты и сотрудники университета расскажут о своих бабушках и дедушках-участниках ВОв и тружениках тыла.</div>
+</div>
+{% for news in wow_news|slice:":15" %}
+<div style="border-bottom: 1px dashed #cccccc;clear:both;padding-right:0.6em">
+	<p align="justify" id="headline">
+	    <b>{{news.date_published|ru_strftime:"%d %B"}}</b>&nbsp;&nbsp;
+		    <a href="{{news.get_absolute_url}}">{{news.title}}</a><br/><br/>
+    <span>{% if news.get_front_image %}<img src="{{news.get_front_image.thumbnail.url}}"
+	alt="{{news.get_front_image.title}}"/>{% endif %}</span>
+			    <span>{{news.description}}</span>
+	</p>
+	<div style="clear:both"></div>
+</div>
+{% endfor %}
+<div style="height:10px;background:#ccc url({{MEDIA_URL}}img/lenta.gif) repeat-x;"></div>

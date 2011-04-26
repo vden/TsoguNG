@@ -1,0 +1,49 @@
+{% load pytils_dt %}
+{% load date_between %}
+
+{% for object in request.mm.polls %}
+<h1><a href="{{ object.get_absolute_url}}">{{ object.title }}</a></h1>
+{% if object.date_published %}
+<div style="text-align:left;padding-bottom: 1.5em">Опрос проводится 
+	{% date_between object.date_published object.expire_date %}
+{% endif %}{% if object.is_active %}{% else %}<span style="float:right; color:red">Завершен</span>{% endif %}</div>
+
+<div class="description page" style="margin-bottom: 15px;">
+  {{ object.description|safe }}
+  <br/>
+</div>
+
+<div style="width:100%">
+	{% if object.access %}
+
+	{% for choice in object.choices %}
+	<div style="width:100%; float:left; background: {% cycle 'whitesmoke' '#E0EAF4' %}; ">
+		<div style="margin: 5px; width:99%; font-size:12pt;">
+			<label for="id_choice_{{ choice.id }}">{{ choice.choice }}</label>
+			<input id="id_choice_{{ choice.id }}" type="radio" name="choice" style="float:right;" value="{{ choice.id }}">
+		</div>
+	</div>
+	{% endfor %}
+	<button style="float:right; margin-top:10px;" onClick="$.get('{{ object.get_absolute_url }}polls/{{ object.id }}/'+$(':radio[name=choice]').filter(':checked').val()+'/', '', function(data) {alert(data); location.reload(); });">Проголосовать</button>
+	<div style="width:100%;" id="answer"></div>
+
+	{% else %}
+
+	{% for choice in object.choices %}
+	<div style="width:100%; float:left;">
+		<div style="margin-top: 10px; margin-bottom: 3px;">{{ choice.choice }}</div>
+		<div id="line_{{ choice.id }}" style="width:90%; height:20px; float:left;"></div>
+		<div style="float:right;">{{ choice.get_results.percent_verbose }}</div>
+		<script type="text/javascript">
+			$(function() {$("#line_{{ choice.id }}").progressbar({value: {{choice.get_results.percent}} }); });
+		</script>
+	</div>
+	{% endfor %}
+
+	{% endif %}
+</div>
+
+<div class="documentByLine" style="clear:both;padding-top:20px">
+	<div style="font-style:italic">Всего учтено голосов: {{ object.count }}</div>
+</div>
+{% endfor %}

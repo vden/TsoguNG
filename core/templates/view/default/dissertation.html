@@ -1,0 +1,22 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% load pytils_dt %}
+
+{% block content %}
+<h1>{{ object.dissertant }}</h1>
+
+
+<div class="content">
+  <b>Специальность:</b> {{ object.speciality }} <br/><br/>
+  <b>Тема диссертации:</b> {{ object.subject }} <br/><br/>
+  <b>Дата защиты:</b> {{ object.date_defend|ru_strftime:"%d %B %Y г."  }} <br/>
+  <b>Диссертационный совет:</b> {{ object.council }} <br/><br/>
+  <b>Дата публикации объявления:</b> {{ object.date_published|ru_strftime:"%d %B %Y г." }} <br/><br/>
+  <b>URL автореферата: </b> {{ object.autoref|urlize }} 
+</div>
+
+{% if object.config.has_comments %}
+	{% load tsogu_comments %}
+	{% comments %}
+{% endif %}
+{% endblock %}

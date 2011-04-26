@@ -1,0 +1,28 @@
+{% extends "forms/default/wrapper.html" %}
+{% load split %}
+{% load pytils_dt %} 
+
+{% block content %}
+<ul>
+	<li><b>Код объекта:</b> {{ object.id }}</li>
+	<li><b>Тип объекта:</b> {{ object.type }}</li>
+	<li><b>Собственный адрес:</b> <a href="{{ object.get_absolute_url }}">{{ object.get_absolute_url }}</a></li>
+	<li><b>Автор:</b> {{ object.author }}</li>
+	<li><b>Дата создания:</b> {{ object.date_created|ru_strftime:"%d-%m-%y %H:%M:%I" }}</li>
+	<li><b>Дата публикации:</b> {{ object.date_published|ru_strftime:"%d-%m-%y %H:%M:%I" }}</li>
+	<li><b>Последний, кто редактировал:</b> {{ object.config.last_editor }}</li>
+	<li><b>Дата последней правки:</b> {{ object.date_modified|ru_strftime:"%d-%m-%y %H:%M:%I" }}</li>
+</ul>
+<br/>
+<h3>Журнал правок содержимого (15 последних):</h3>
+<table>
+	<tr style="background: #E0EAF4;"><th>Автор</th><th>Дата</th></tr>
+	{% for line in object.config.editing_history|split:";"|slice:"-15:" %}
+	<tr style="background: {% cycle 'whitesmoke' '#E0EAF4' %};">
+		{% for x in line|split:"," %}
+		<td style="padding:0.1em 0.5em;">{{ x }}</td>
+		{% endfor %}
+	</tr>
+{% endfor %}
+</table>
+{% endblock %}

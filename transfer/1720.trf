@@ -1,0 +1,132 @@
+ZODB = "http://old.tsogu.ru/1720/";
+CMS = "admin:ad3min31415";
+G = 123;
+
+NewsItem -> News = {
+	 id = slug,
+	 title = title,
+	 author = "1",
+	     description = description,
+	     state = state,
+       created = date_created,
+       modified = date_modified,
+       effective = date_published,
+       CookedBody = text,
+       category = "1"
+	 };
+
+Headline -> News = {
+	 id = slug,
+	 title = title,
+	 author = "1",
+	     description = description,
+	     state = state,
+       created = date_created,
+       modified = date_modified,
+       effective = date_published,
+       CookedBody = text,
+       category = category
+	 };
+
+ATEvent -> Event = {
+	id = slug
+};
+
+PloneArticle -> Page = {
+	     id = slug,
+	     title = title,
+	     author = "1",
+	     description = description,
+	     state = state,
+       created = date_created,
+       modified = date_modified,
+       effective = date_published,
+       CookedBody = text
+};
+
+Folder -> Page = {
+       id= slug,
+       title = title,
+       author = "1",
+       description = description,
+       state = state,
+       created = date_created,
+       modified = date_modified,
+       effective = date_published,
+       text = ""
+};
+
+Document -> Page = {
+       id= slug,
+       title = title,
+       author = "1",
+       description = description,
+       state = state,
+       created = date_created,
+       modified = date_modified,
+       effective = date_published,
+       text = text
+};
+
+ATDocument -> Page = {
+       id= slug,
+       title = title,
+       author = "1",
+       description = description,
+       state = state,
+       created = date_created,
+       modified = date_modified,
+       effective = date_published,
+       text = text
+};
+
+File -> File = {
+     id = slug,
+       title = title,
+       author = "1",
+       description = description,
+       state = state,
+       data = path,
+       created = date_created,
+       modified = date_modified,
+       effective = date_published
+};
+
+ATFile -> File = {
+     id = slug,
+       title = title,
+       author = "1",
+       description = description,
+       state = state,
+       data = path,
+       created = date_created,
+       modified = date_modified,
+       effective = date_published
+};
+
+ATImage -> Photo = {
+     id = slug,
+     title = title,
+     author = "1",
+     description = description,
+     state = state,
+     image = image,
+       created = date_created,
+       modified = date_modified,
+       effective = date_published
+};
+
+Image -> Photo = {
+     id = slug,
+     title = title,
+     author = "1",
+     description = description,
+     state = state,
+     image = image,
+       created = date_created,
+       modified = date_modified,
+       effective = date_published
+};
+
+
+run ZODB CMS "667" "verbose";

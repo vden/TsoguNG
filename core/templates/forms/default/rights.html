@@ -1,0 +1,26 @@
+<form action="" method="post">
+	<h3>Право и лево</h3>
+
+	<table style="border: 1px solid #800;border-collapse: collapse;" cellspacing="0" border="1">
+		<tr>
+			<th>Название</th>
+			{% for group in form.groups %}
+			<th>{{ group }}</th>
+			{% endfor %}
+		</tr>
+		{% for permission in form.permissions %}
+		<tr>
+			<td>{{ permission }}</td>
+			{% for group in form.groups %}
+			<td></td>
+			{% endfor %}
+		</tr>
+		{% endfor %}
+	</table>
+	<hr>
+	<h3>Делегировать группу</h3>
+	{{ form.as_p }}
+	<br>
+	<input type="hidden" name="form_name" value={{form_name}} />
+	<input type="submit" value="Сохранить" />
+</form>

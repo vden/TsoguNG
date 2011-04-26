@@ -1,0 +1,17 @@
+{% load pytils_dt %}
+
+<h1>Логи</h1>
+
+{% if logs %}
+ {% for log in logs %}
+  <div style="width:100%">
+   <a href="javascript:;" onClick="$('#details_{{ log.id }}').toggle()">{{ log.title }}</a>
+   <span style="float:right;">{{ log.user}} / {{ log.date|ru_strftime:"%d %B %Y" }}</span>
+   <div id="details_{{ log.id }}" style="display:none; border:1px dashed red;">
+    {{ log.text|safe }}
+   </div>
+  </div>
+ {% endfor %}
+{% else %}
+  <h3 style="margin: 5px;">Ошибок не зафиксировано</h3> 
+{% endif %}

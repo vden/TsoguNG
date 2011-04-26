@@ -1,0 +1,33 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% block content %}
+<h2>{{ object.title }}</h2>
+
+<div class="description page">
+	{{ object.description }}
+</div>
+
+<hr/>
+
+<ul>
+  {% load nodes %}
+  {% load pytils_dt %}
+	{% if object.config.sort_field_ %}
+		{% nodes "parents" object.get_absolute_url "sort_fields" object.config.sort_field_ "for_user" "True" "states" "опубликованный" as objs %}
+	{% else %}
+		{% nodes "parents" object.get_absolute_url "sort_fields" "position" "for_user" "True" "states" "опубликованный" as objs %}
+	{% endif %}
+
+
+	{% for x in objs %}
+	<li>
+		{% ifequal x.get_class_name "Link" %}
+		  <a href="{{ x.get_link_absolute_url }}"><b>{{ x.title }}</b></a><br/>
+		{% else %}
+		  <a href="{{ x.get_absolute_url }}"><b>{{ x.title }}</b></a><br/>
+		{% endifequal %}
+		  {{ x.description }}</li>
+	{% endfor %}
+
+</ul>
+{% endblock %}

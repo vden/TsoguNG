@@ -1,0 +1,8 @@
+<h2>Результаты поиска</h2>
+
+<ol>
+{% for r in  search_results %}
+<li><a href="{{r.get_absolute_url}}">{{r.title}}</a>&nbsp;<span style="color:grey">({{r.get_class_name_i18n}})</span><br/>
+<span>{{r.description}}</span></li>
+{% endfor %}
+</ol>

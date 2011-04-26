@@ -1,0 +1,29 @@
+<h1>Система управления доступом к внешним приложениям</h1>
+<div style="padding:1em;">
+	<center>
+		<span style="font-size:12pt; font-weight:bold;">Пользователь:</span>
+		<input type="text" id="user_search" value="{{ user_search }}" />
+		<button onClick="window.location='?username='+$('#user_search').val();">Показать</button>
+	</center>
+</div>
+{% for app in apps %}
+<div>
+	<div>
+		<span style="font-size:12pt;">{{ app.name }}</span>
+		<ul>
+			{% for g in app.user_groups %}
+			<li style="width:100%">
+				{{ g.name }}
+				<span style="float:right;">
+					<input type="checkbox" {% if g.choice %}checked{% endif %} 
+						onClick="$.post('ajax/set_group/',{'app':'{{ app.id }}',
+							'group':'{{ g.id }}','username':'{{ user_search }}'})" />
+				</span>
+			</li>
+			{% endfor %}
+		</ul>
+		<!-- аккуратно с этим error-ом, он заполняется по факту -->
+		{% if app.error %}<span style="color:red">{{ app.error }}</span>{% endif %}
+	</div>
+</div>
+{% endfor %}

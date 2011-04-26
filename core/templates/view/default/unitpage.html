@@ -1,0 +1,58 @@
+{% extends "forms/default/wrapper.html" %}
+{% load cache thumbnail %}
+
+{% load pytils_dt %}
+
+{% block content %}
+<h1>{{ object.title }}</h1>
+
+<div class="description" style="padding-top: 1.2em; padding-bottom: 0.5em">
+  {{ object.description }}
+</div>
+
+{% comment %}
+{% if object.get_images %}
+<div style="margin: -15px 10px; float: right; width: 160px; padding: 10px 15px; background-color: #DFE9F4">
+  {% for photo in object.get_images %}
+  <a href="{{ photo.image.url }}" class="thickbox" rel="news-{{ object.id }}-gallery"
+     title="{{ photo.title }}{% if photo.description %}. {{ photo.description }}{% endif %}">
+	<img border="0" src="{{ photo.thumbnail.url }}" class="photo page" alt="{{ photo.title }}" />
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+{% endcomment %}
+
+<div class="content page">
+	{{ object.text|safe }}
+</div>
+
+<br/><br/>
+
+<h2 class="h2menu">{% if object.config.news_title %}{{ object.config.news_title }}{% else %}Новости подразделения{% endif %}</h2>
+
+{% for news in object.get_news|slice:":2" %}
+<div style="border-bottom: 1px dashed #cccccc;">
+<table width="100%">
+  <tr><td><p align="justify" id="headline">
+	<span>{% if news.get_front_image %}<img src="{% thumbnail news.get_front_image.image.name 80x80 crop %}" alt="{{news.get_front_image.title}}"/>{% endif %}</span>
+	<b>{{news.date_published|ru_strftime:"%d %B"}}</b>&nbsp;&nbsp;
+	<a href="{{news.get_absolute_url}}">{{news.title}}</a><br/><br/>
+	<span>{{news.description}}</span>
+  </p></td></tr>
+</table>
+
+</div>
+{% endfor %}
+
+{% for news in object.get_news|slice:"2:" %}
+<div style="border-bottom: 1px dashed #cccccc;">
+	<b>{{news.date_published|ru_strftime:"%d %B"}}</b>&nbsp;&nbsp;
+	<a href="{{news.get_absolute_url}}">{{news.title}}</a><br/><br/>
+</div>
+{% endfor %}
+
+<div style="text-align:right">
+	<a href="/portal/newsline/?{% for t in object.tags.all %}&tags={{ t.id}}{% endfor %}">Архив новостей</a>
+</div>
+{% endblock %}

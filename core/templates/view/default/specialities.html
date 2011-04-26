@@ -1,0 +1,13 @@
+<h1>{{ object.title }}</h1>
+
+<div class="content page">
+	{{ object.text|safe }}
+</div>
+
+{% load extra_api %}
+{% gjson "http://std.tsogu.ru/speciality/subfaculty/" object.config.subfaculty_id "/json/" as data %}
+<ul>
+{% for spec in data %}
+<li><a href="/university/subdivisions/uito/infs/1/?speciality={{ spec.id }}">{{ spec.name }}</a> ({% if spec.short_name %}{{ spec.short_name }}, {% endif %}{{ spec.code }}, {{ spec.type__name }})</li>
+{% endfor %}
+</ul>

@@ -1,0 +1,73 @@
+{% if has_access %}
+<div class="ui-corner-all objecttoolbar">
+{% if new %}
+<span><b>Создание объекта</b></span>
+{% else %}
+{% comment %}
+<div class="iconsBlock">
+<a href="{{ object.get_absolute_url }}act/remove/">
+<img src="/media/img/icons/remove.png" alt="Удалить в корзину" />
+</a>
+</div>
+{% endcomment %}
+<div class="objectTabs">
+	{% for tab in tabs %}
+		{% ifequal tab.0 action %}
+			<span>{{ tab.1|safe }}</span>
+		{% else %}
+			<a href="{{ object.get_absolute_url }}act/{{ tab.0 }}/">{{ tab.1|safe }}</a>
+		{% endifequal %}&nbsp;
+	{% endfor %}
+</div>
+<hr />
+<div class="contentActions objectMenu">
+<ul> 
+	{% if object.id %}
+	<li>
+	  {% if object.isContainable %}
+	  <ul id="cssmenu">
+	    <li style="width:9em;"><a href="#">создать объект:</a>
+	      <ul>
+		{% for c in request.classes %}
+		<li><a href="{{ object.get_absolute_url }}act/insert/?type={{ c.name }}">{{ c.verbose_name }}</a></li>
+		{% endfor %}
+	      </ul>
+	    </li>
+	  </ul>
+	  {% endif %}
+	</li>
+
+	<li>
+	  <ul id="cssmenu">
+	    <li style="width:14em;"><a href="#">статус: {{ object.state }}</a>
+	      <ul>
+		{% for i in object.available_transforms %}
+		<li><a href="{{ object.get_absolute_url }}act/state_transform/?state={{i.url}}">{{ i.name }}</a></li>
+		{% endfor %}
+	      </ul>
+	    </li>
+	  </ul>
+	</li>
+
+	<!--
+	{% if object.available_templates %}
+	<li>
+	  <ul id="cssmenu">
+	    <li style="width:5em;"><a href="#">шаблон:</a>
+	      <ul>
+		{% for i in object.available_templates %}
+		<li><a href="{{ object.get_absolute_url }}act/set_template/?template={{ i.id }}">{{ i.name }}</a></li>
+		{% endfor %}
+	      </ul>
+	    </li>
+	  </ul>
+	</li>
+	{% endif %}
+	-->
+	{% endif %}
+</ul>
+
+</div>
+{% endif %}
+</div>
+{% endif %}

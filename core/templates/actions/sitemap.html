@@ -1,0 +1,20 @@
+<h1>Карта портала</h1>
+<ul>
+	{% for first in sitemap %}
+	<li><a href="/{{ first.slug }}/">{{ first.title }}</a></li>
+	{% if first.children %}
+	<ul>
+		{% for second in first.children %}
+		<li><a href="/{{ first.slug }}/{{ second.slug }}/">{{ second.title }}</a></li>
+		{% if second.children %}
+		<ul>
+			{% for third in second.children %}
+			<li><a href="/{{ first.slug }}/{{ second.slug }}/{{ third.slug }}/">{{ third.title }}</a></li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+		{% endfor %}
+	</ul>
+	{% endif %}
+	{% endfor %}
+</ul>

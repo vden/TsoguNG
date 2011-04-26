@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Language" content="ru-ru" />
+	<link rel="stylesheet" type="text/css" href="/media/css/print.css" />
+</head>
+<body>
+	<h1>{{ object.title }}</h1>
+	{% load pytils_dt %}
+	<div class="tags">
+		<b>{{ object.date_published|ru_strftime:"%d %B" }}</b>, {{object.tags.all|join:", " }}
+	</div>
+	<br/>
+	<!--
+	<div class="description">
+		{{ object.description }}
+	</div>
+	-->
+	<div class="text">
+		{{ object.text|safe }}
+	</div>
+</body>
+</html>

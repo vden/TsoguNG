@@ -1,0 +1,119 @@
+<h4>Рейтинг
+{% if inst and not notfound %}
+	({{inst}}, {{edu_form}} - {{spec_name}})
+{% endif %}
+</h4>
+<form method="POST" action="/entrant/rating/">
+<input type="hidden" name="action" value="get_rating"/>
+
+<select name="inst" id="inst"
+	onchange="
+	{% for row in spec_list %}
+		if (this.value == '{{row.0}}') {
+			$('#spec_name').empty();
+			{% for spec in row.1 %}
+				$('#spec_name').append('<option value=\'{{spec}}\'>{{spec}}</option>');				
+			{% endfor %}
+			
+		};
+	{% endfor %}
+	"
+>
+	<option value="">--Институт--</option>
+	{% for row in inst_list %}
+		{% ifequal row.0 inst %}
+		<option value="{{row.0}}" selected>{{row.0}}</option>
+		{% else %}
+		<option value="{{row.0}}">{{row.0}}</option>
+		{% endifequal %}
+	{% endfor %}
+</select>
+
+<select name="edu_form" id="edu_form">
+	{% for row in edu_form_list %}
+		{% ifequal row.0 edu_form %}
+		<option value="{{row.0}}" selected>{{row.0}}</option>
+		{% else %}
+		<option value="{{row.0}}">{{row.0}}</option>
+		{% endifequal %}
+	{% endfor %}
+</select>
+
+<select name="spec_name" id="spec_name">
+	<option value="">--Спец.--</option>
+	{% for row in spec_list %}
+		{% ifequal row.0 inst %}
+		{% for spec in row.1 %}
+			{% ifequal spec spec_name %}
+				<option value="{{spec}}" selected>{{spec}}</option>
+			{% else %}
+				<option value="{{spec}}">{{spec}}</option>
+			{% endifequal %}
+		{% endfor %}
+		{% endifequal %}
+	{% endfor %}
+</select>
+
+<select name="category" id="category">
+	{% for row in category_list %}
+		{% ifequal row category %}
+		<option value="{{row}}" selected>{{row}}</option>
+		{% else %}
+		<option value="{{row}}">{{row}}</option>
+		{% endifequal %}
+	{% endfor %}
+</select>
+
+<input type="submit" value="Показать"/>
+
+{% if notfound %}
+	<h4>Набор по данной специальности не ведется</h4>
+{% endif %}
+
+{% ifequal action 'get_rating' %}
+{% if abiturient_list %}
+<table class="striped">
+	<tr>
+		<th rowspan="{{rowspan}}">№</th>
+		<th rowspan="{{rowspan}}">ФИО</th>
+		<th rowspan="{{rowspan}}">Приоритет</th>
+		{% if subj_list %}
+			<th rowspan="{{rowspan}}">Балл аттестата</th>
+			<th colspan="{{subj_count}}">Результаты</th>
+		{% endif %}
+		<th rowspan="{{rowspan}}">Балл</th>
+		<th rowspan="{{rowspan}}">&nbsp;</th>
+		
+	</tr>
+	{% if subj_list %}
+	<tr>
+		{% for row in subj_list %}
+			<th>{{ row.0 }}</th>
+		{% endfor %}
+	</tr>
+	{% endif %}
+	{% for row in abiturient_list %}
+	<tr>
+		<td>{{forloop.counter}}</td>
+		<td style="text-align: left; padding-left: 3px">{{row.0}} {{row.1}} {{row.2}}</td>
+		<td>{{row.3}}</td>
+		<td>{{row.9|floatformat:2}}</td>
+		
+		{% if subj_list %}
+		
+			{% for result in row.6 %}
+				<td>{{ result }}</td>
+			{% endfor %}
+			<td>{{row.5}}</td>
+		{% endif %}
+		<td>
+			{% if not row.12 %}
+			копии
+			{% endif %}	
+		</td>
+	</tr>
+	{% endfor %}
+</table>
+<p style="text-align: right; color: gray;">{{gen_time.0}} информация обновится</p>
+{% endif %}
+{% endifequal %}

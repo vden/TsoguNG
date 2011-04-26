@@ -1,0 +1,50 @@
+<style>
+	.wrapper {
+		margin-left: 10px;
+		display: none;
+	}
+</style>
+<h1>Реестр</h1>
+<h2>Типы ({{ REGISTRUM.types|length }})</h2>
+<ul>
+	{% for name,type in REGISTRUM.types.items %}
+	<li><a class='local-link' href='javascript:;' onClick="$(this).next('div').toggle();">
+		{{ name }} ({{ type.verbose_name }}){% if type.user %}. Доступен пользователям.{% endif %}</a>
+		<div class='wrapper'>
+			{% for name,value in type.actions.items %}
+			<h3>{{ name }}:</h3>
+				<ul>
+					{% for param_name,param in value.items %}
+					<li><b>{{ param_name }}:</b>{{ param }}</li>
+					{% endfor %}
+				</ul>
+			{% endfor %}
+		</div>
+	</li>
+	{% endfor %}
+</ul>
+<h2>Рабочая зона ({{ REGISTRUM.workspace|length }})</h2>
+<ul>
+	{% for name,data in REGISTRUM.workspace.items %}
+	<li>{{ name }} ({{ data.verbose_name }}). {{ data.description }}. Место создания объектов: {{ data.default_place }}</li>
+	{% endfor %}
+</ul>
+<h2>Действия ({{ REGISTRUM.actions|length }})</h2>
+<ul>
+	{% for codename,action in REGISTRUM.actions.items %}
+	<li><a class='local-link' href='javascript:;' onClick="$(this).next('div').toggle();">
+		{{ codename }} ({{ action.verbose_name }}). Тип: {{ action.type }}. Имя: {{ action.funcname }}</a>
+		<div class='wrapper'>
+			<h3>{{ codename }}</h3>
+			{% for name,value in action.items %}
+			<p><b>{{ name }}:</b> {{ value }}</p>
+			{% endfor %}
+		</div>
+	</li>
+	{% endfor %}
+</ul>
+<hr/>
+<h2><a class='local-link' href='javascript:;' onClick="$(this).parent().next('div.wrapper').toggle();">REGISTRUM</a></h2>
+<div class='wrapper'>
+	{{ REGISTRUM|pprint }}
+</div>

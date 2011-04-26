@@ -1,0 +1,28 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% block content %}
+<h1>{{ object.title }}</h1>
+{% if object.text %}
+<div class="content page" style="border-bottom: 1px dashed #cccccc;">
+	{{ object.text|safe }}
+</div>
+{% endif %}
+{% load nodes %}
+{% load pytils_dt %}
+{% load paginator %}
+
+{% nodes "parents" object.get_absolute_url "sort_fields" "-date_published" "cascade" "True" "types" "Post" "states" "опубликованный" as objs %}
+
+{% paginator objs 5 as data %}
+
+{% for obj in data.get_current_page.object_list %}
+<div style="border-bottom: 1px dashed #cccccc;">
+	<h2>{{obj.title}}</h2>
+	<div style="text-align:left;padding-bottom: 1.5em">{{ obj.date_published|ru_strftime:"%d %B %Y" }}, Тэги: {{obj.posttags.all|join:", " }}</div>
+	<span>{{obj.description}}</span>
+	<div style="text-align:right;"><a style="text-decoration:none;" href="{{obj.get_absolute_url}}">подробнее...</a></div>
+</div>
+{% endfor %}
+
+{{ data.render_pages }}
+{% endblock %}

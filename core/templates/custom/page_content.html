@@ -1,0 +1,7 @@
+<div class='page content'>
+	{% if reference_object.text %}
+	{{ reference_object.text|safe }}
+	{% else %}
+	{{ reference_object }}
+	{% endif %}
+</div>

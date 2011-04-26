@@ -1,0 +1,76 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% load pytils_dt %}
+{% load nodes %}
+
+{% block content %}
+<style>
+	form#content_form thead td{padding:3px;background-color:#C5DBEC;}
+	form#content_form tbody td{padding:3px;background-color:#DFEFFC;}
+	form#content_form td{vertical-align:middle;}
+	form#content_form div{background-color:#C5DBEC;padding:3px;}
+	form#content_form div input{background-color:#DFEFFC; margin-right:5px;}
+	h2.not_found {text-align:center;color:#666;}
+</style>
+
+{% nodes "foruser" True "parents" object.get_absolute_url "sort_fields" "position" as children %}
+
+<h1>{{ object.title }}</h1>
+<a class="link-parent" href="{{ object.parent.get_absolute_url }}act/content/">На уровень выше</a>
+
+<form id='content_form' action="" method="post">
+	{% if children %}
+	<table width='100%'>
+		<col width='15px'/>
+		<col width='*'/>
+		<col width='130px'/>
+		<col width='120px'/>
+		<thead>
+			<td align='center'><input type="checkbox"
+				class='noborder'
+				alt="Выбрать все элементы"
+				onclick="$('input[name=ids:list]').click()"
+				title="Выбрать все элементы"
+				name="selectButton"/>
+			</td>
+			<td>Название</td>
+			<td>Статус</td>
+			<td>Изменен</td>
+		</thead>
+		<tbody id='sortable'>
+		{% for node in children %}
+			<tr>
+				<td align='center'><input id="cb_{{ node.id }}"
+					type="checkbox"
+					class='noborder'
+					tabindex="3"
+					alt="Выбрать {{ node.title }}"
+					title="Выбрать {{ node.title }}"
+					value="{{ node.id }}" name="ids:list"/></td>
+				<td>{{ node.get_class_name }} <a href="{{ node.get_absolute_url }}act/content/">{% firstof node.title node.slug %}</a></td>
+				<td>{{ node.state.name }}</td>
+				<td>{{ node.date_modified|ru_strftime:"%d %B %Y" }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	<input type="hidden" value="" name="bids" id="bids"/>
+
+	{% else %}
+	<h2 class='not_found'>Вложенных объектов не содержится</h2>
+
+	{% endif %}
+	<div>
+		<input type="submit" tabindex="16" value="Вырезать" name="folder_cut:method"/>
+		<input type="submit" tabindex="18" value="Удалить" name="folder_delete:method"/>
+		{% ifequal process "copy" %}<input type="submit" tabindex="18" value="Вставить" name="folder_copypaste:method"/>{% endifequal %}
+		{% ifequal process "cut" %}<input type="submit" tabindex="18" value="Вставить" name="folder_cutpaste:method"/>{% endifequal %}
+		<input type="submit" tabindex="19" value="Сохранить позицию" name="folder_position:method" onclick="set_bids_position();"/>
+	</div>
+
+	<script type="text/javascript">
+		$('#sortable').sortable();
+		$('#sortable').disableSelection();	
+	</script>
+</form>
+{% endblock %}

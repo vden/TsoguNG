@@ -1,0 +1,7 @@
+{% if config.items %}
+<div style="padding-top:0.3em"><br/>
+{% for x in config.items %}
+  <div><span><b>{{x.0}}:</b></span>&nbsp;<span>{{x.1|urlizetrunc:40}}</span></div>
+{% endfor %}
+</div>
+{% endif %}

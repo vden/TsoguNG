@@ -1,0 +1,17 @@
+<h2>Профиль {{ user.username }}</h2>
+<script>
+	$.ajaxSetup({
+		beforeSend: function() {
+			$('#profile_content').text('...Идёт загрузка...');},
+		error: function() {
+			$('#profile_content').text('Произошла ошибка при загрузке данных, Обновите страницу')}
+	});
+</script>
+<div class='right_align'>
+	<a class='local-link' href="javascript:;"
+		onclick="$('#profile_content').load('/userprofile/update/');">
+	Обновить профиль</a>
+</div>
+<div id="profile_content">
+{% include "profile/view.html" %}
+</div>

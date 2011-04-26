@@ -1,0 +1,25 @@
+{% ifnotequal pages.count "1" %}
+<br/>
+<center>
+<div id="pagination">
+	<b>Страницы: </b>&nbsp;
+{% if page.has_previous %}<a href="?{{ query }}&page={{ page.previous_page_number }}">предыдущая</a>{% endif %}
+
+	<span id="p-wrapper">&nbsp;|&nbsp;</span>
+
+	{% if not pages.is_begining %}...{% endif %}
+	{% for p in pages.page_range %}
+	{% ifequal p page.number %}
+	<span id="active">{{ p }}</span>&nbsp;
+	{% else %}
+	<a href="?{{ query }}&page={{ p }}">{{ p }}</a>&nbsp;
+	{% endifequal %}
+	{% endfor %}
+	{% if not pages.is_ending %}...{% endif %}
+
+	<span id="p-wrapper">&nbsp;|&nbsp;</span>
+
+{% if page.has_next %}<a href="?{{ query }}&page={{ page.next_page_number }}">следующая</a>{% endif %}
+</div>
+</center>
+{% endifnotequal %}

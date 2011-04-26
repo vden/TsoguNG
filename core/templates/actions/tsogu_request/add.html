@@ -1,0 +1,12 @@
+<h3>Создание заявки</h3>
+<form>
+<table>
+	{{form.as_table}}
+</table>
+
+<div class='right_align'>
+	<a class='local-link' href="javascript:;"
+		onclick="
+		$('#request_content').html('...Идёт загрузка...').load('/tsogu_request/ajax/request_add/');"
+		>Сохранить</a>
+</form>

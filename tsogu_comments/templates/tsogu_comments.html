@@ -1,0 +1,71 @@
+<style>
+	#comment_dialog {
+		display: none;
+		border: 1px #8CACBB solid;
+		background-color: whitesmoke;
+		position: absolute;
+		padding: 5px;
+		width: 500px;
+		overflow: hidden;
+		-moz-box-shadow: 0 0 5px black;
+	}
+	#comment_dialog input[type=image]{
+		float: right;
+		background: transparent;
+		border: none;
+		padding: 1px;
+	}
+	#comment_dialog input[type=image]:hover {
+		border: 1px #8CACBB solid;
+		padding: 0;
+	}
+	div.comments  ul{
+		list-style: none;
+	}
+	div.comments > ul{
+		margin-left: 0;
+	}
+	div.comments li {
+		display: block;
+		list-style-image: none;
+	}
+	div.comments h3 {
+		margin-bottom: 10px;
+	}
+	div.comment a.add_comment {
+		float: right;
+	}
+	div.loading {
+		text-align: center;
+		padding: 10px;
+	}
+</style>
+{% load pytils_dt %}
+<div class='comments'>
+	<h3>Комментарии ({{length}}):</h3>
+	{% if length %}
+	<a href="javascript:;" comment_id="" class="local-link add_comment">Добавить комментарий</a>
+	{{ html|safe }}
+	{% else %}
+	<div class="comment">Нет ни одного комментария. Ваш будет первым!</div>
+	{% endif %}
+	<a href="javascript:;" comment_id="" class="local-link add_comment">Добавить комментарий</a>
+</div>
+<script>
+	var comment_dialog = $("<div id='comment_dialog'>\
+		<input type='image' src='/media/img/icons/cancel.png' title='Закрыть' alt='X' onclick='$(this).parent().hide()' />\
+		<div class='content'></div>");
+	var comment_content = $('.content', comment_dialog);
+	var loading = $("<div class='loading'>Идёт загрузка...</div>");
+	$("a.add_comment").click(function () {
+		comment_dialog.insertAfter(this).draggable().show();
+		$.ajax({
+			url: "/comments/add/",
+			type: "GET",
+			data: {bid:'{{object.id}}', re:$(this).attr('comment_id')},
+			beforeSend: function() {comment_content.html(loading);},
+			success: function(data) {comment_content.html(data);},
+			error: function() {comment_content.text("Произошла ошибка при загрузке формы")}
+		});
+	})
+</script>

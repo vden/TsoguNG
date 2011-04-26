@@ -1,0 +1,55 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% load pytils_dt %}
+{% load nodes %}
+
+{% block content %}
+<h1>{{ object.title }}</h1>
+<div style="text-align:left;padding-bottom: 1.5em"><b>{{ object.date_published|ru_strftime:"%d %B" }}</b>, {{object.tags.all|join:", " }}</div>
+
+{% nodes "types" "Photo" "parents" object.get_absolute_url "sort_fields" "position" as photos %}
+{% if photos %}
+<div style="margin: -15px 0 10px 10px; float: right; background-color: #DFE9F4">
+	{% for photo in photos %}
+	<a href="{{ photo.image.url }}" class="thickbox" rel="news-{{ object.id }}-gallery"
+		title="{{ photo.title }}{% if photo.description %}. {{ photo.description }}{% endif %}">
+		<img border="0" src="{{ photo.thumbnail.url }}" class="photo page" style="display: block; margin: 10px;" alt="{{ photo.title }}" />
+	</a>
+	{% endfor %}
+</div>
+{% endif %}
+
+<div class="content page">
+  {{ object.text|safe }}
+</div>
+
+{% if object.get_nested_links %}
+<div><br/>
+<h4 style="padding-bottom:0.5em">Ссылки по теме</h4>
+{% for link in object.get_nested_links %}
+<div style="padding-left:1em">{{ link.url|urlize }} &mdash; {{ link.title }}, {{ link.date_published|ru_strftime:"%d.%m.%Y" }}</div>
+{% endfor %}
+</div>
+{% endif %}
+
+<div class="documentByLine" style="clear:both;padding-top:20px">
+	<div style="font-style:italic">{{ object.author.user_profile.subscription }}</div>
+</div>
+
+{% load nodes %}
+{% nodes "types" "File"  "parents" object.get_absolute_url "sort_fields" "-date_published" as files %}
+
+{% if files %}
+<div  style="margin: 15px 10px; width: 80%; padding: 10px 15px; background-color: #DFE9F4">
+  Вложенные файлы:
+  <ul>
+    {% for file in files %}
+    <li><a href="{{ file.get_absolute_url }}">{{file.title}}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% load tsogu_comments %}
+{% comments %}
+{% endblock %}

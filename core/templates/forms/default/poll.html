@@ -1,0 +1,33 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% load help %}
+
+{% block content %}
+{{ form.iform.media }}
+<form action="" method="post">
+	{% for field in form.iform %}
+	<div class="field {% if field.errors %} error {% endif %}">
+		<label for="{{ field.auto_id }}" style="float:left;">{{ field.label }}</label>
+		{% help "field" %}
+		{% if field.help_text %}<br/><div class="formHelp">{{ field.help_text }}</div>{% endif %}
+		<span style="color:red; float:right;">{{ field.errors.as_text }}</span><br/>
+		<div style="overflow:hidden; padding:2px;">{{ field }}</div>
+	</div>
+	{% endfor %}
+	{{ form.iformset.management_form }}
+	<table>
+		<tr>
+			<th>Вариант ответа</th>
+			<th>Удалить</th>
+		</tr>
+		{% for f in form.iformset.forms %}
+		<tr>
+			<td>{{ f.id }} {{ f.choice }}</td>
+			<td>{{ f.DELETE }}</td>
+		</tr>	
+		{% endfor %}
+	</table>
+	<input type="hidden" name="form_name" value={{form_name}} />
+	<input type="submit" value="Сохранить" />
+</form>
+{% endblock %}

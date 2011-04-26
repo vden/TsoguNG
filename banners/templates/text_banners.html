@@ -1,0 +1,14 @@
+<div class="banner_{{ group }}">
+  {% for b in banners %}
+
+  <DIV style="PADDING-BOTTOM: 0.5em">
+    <DIV class=rc2 style="BACKGROUND-COLOR: {{b.color}}">
+      <DIV class=tr>
+	<DIV class=bl>
+	  <DIV class=tl>
+
+	    <DIV class=br>
+	      <DIV class=body style="PADDING-RIGHT: 0.5em; PADDING-LEFT: 0.5em; PADDING-BOTTOM: 0.5em; PADDING-TOP: 0.5em"><A style="FONT-WEIGHT: bold; FONT-SIZE: 12px; COLOR: #fffbef; TEXT-DECORATION: none" href="{{b.link}}"  {% if b.new_window %}target="_blank"{% endif %} align="center">{{b.title}}
+  </A> </DIV></DIV></DIV></DIV></DIV></DIV></DIV>
+  {% endfor %}
+</div>

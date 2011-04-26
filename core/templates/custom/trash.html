@@ -1,0 +1,76 @@
+<style>
+table.result {
+	padding: 0;
+	margin: 0;
+	border-collapse: collapse;
+	width: 100%;
+	border: 1px solid gray;
+}
+.result td, .result th{
+	border: 1px solid gray;
+	border-collapse: collapse;
+	padding: 3px;
+	vertical-align: middle;
+}
+.result th {
+	background-color: #bbbbbb;
+}
+.result td.center {
+	text-align: center;
+}
+.result tr.gray {
+	background-color: #eeeeee;
+}
+/*
+.result tbody tr:hover {
+	background-color: #dddddd;
+}
+*/
+.restore {
+	margin-right: 2px;
+	cursor: pointer;
+}
+.destroy {
+	margin-left: 2px;
+	cursor: pointer;
+}
+</style>
+
+<script>
+function callback(obj,color,text){
+	obj.parent().css('background-color',color);
+	obj.html(text);
+}
+</script>
+
+<h1>Корзина ({{ objects|length }})</h1>
+<br/>
+{% if objects %}
+<table class='result'>
+	<col width='4pt'>
+	<col width='*'>
+	<col width='130px'>
+	<col width='50px'>
+	<thead>
+		<th>#</th>
+		<th>Название объекта</th>
+		<th>Дата последнего изменения</th>
+		<th>Действия</th>
+	</thead>
+	<tbody>
+		{% for o in objects %}
+		<tr {% cycle "class='gray'" ""%} >
+			<td>{{ forloop.counter }}</td>
+			<td><a href="{{ o.get_absolute_url }}">{% firstof o.title o.slug %}</a></td>
+			<td class='center'>{{ o.date_modified|date:"d.m.Y H:i" }}</td>
+			<td class='center' id="object_{{ o.id }}">
+				<img title="Восстановить" class="restore" src="/media/img/icons/dialog-ok.png" alt="Восстановить" onClick="$.get('{{ o.get_absolute_url }}act/restore/',{},function(data){callback($('#object_{{ o.id }}'),'#BDF69A',data);})" />
+				<img title="Удалить" class="destroy" src="/media/img/icons/dialog-cancel.png" alt="Удалить" onClick="if (confirm('Вы уверены, что хотите удалить объект безвозвратно?')){$.get('{{ o.get_absolute_url }}act/destroy/',{},function(data){callback($('#object_{{ o.id }}'),'#FFB9A6',data);})}" />
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% else %}
+<h3 style="margin: 5px;">Корзина пуста</h3> 
+{% endif %}

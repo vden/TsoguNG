@@ -1,0 +1,11 @@
+<form method="POST" id="profile_edit_form"
+	onSubmit="$('#profile_content').load('/userprofile/edit/', $('#profile_edit_form').serializeArray());return false;">
+	{% for field in form %}
+	<div class="fieldWrapper">
+		{{ field.errors }}
+		{{ field.label_tag }}: {{ field }}
+	</div>
+	{% endfor %}
+	<br/>
+	<input type='submit' value='Сохранить'/>
+</form>

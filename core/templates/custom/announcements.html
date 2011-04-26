@@ -1,0 +1,18 @@
+{% load cache %}
+
+{% cache 3600 main_events %}
+<div class="box">
+	<h5>Объявления</h5>
+	<div align="left" id="portlet">
+		{% load pytils_dt %}
+		{% load nodes %}
+
+		{% nodes "types" "Page" "states" "опубликованный" "parents" "/news/announcements" "sort_fields" "-date_published" "limit" "5" as ann_list %}
+		{% for a in ann_list %}
+		<div style="padding: 5px 5px 1px"><b>{{ a.date_published|ru_strftime:"%d %B" }}</b>&nbsp;<a href="{{ a.get_absolute_url }}">{{ a.title }}</a> </div>
+		{% endfor %}
+	</div>
+	<br/>
+	<div style='text-align:right'><small><a href="http://www.tsogu.ru/news/announcements/">Все объявления</a></small></div>
+</div>
+{% endcache %}

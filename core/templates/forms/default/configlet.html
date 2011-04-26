@@ -1,0 +1,44 @@
+{% extends "forms/default/wrapper.html" %}
+{% block content %}
+<table style="width:100%; margin: 10px 0 5px 0;">
+	<tr style="background: #E0EAF4;">
+		<td style="text-align:center; width:10em;">Параметр</td>
+		<td style="text-align:center; width:auto;">Значение</td>
+		<td style="width:10em;"></td>
+	</tr>
+	<tr style="background: whitesmoke;">
+		<td>Метаданные</td>
+		<td>{{ object }} ({{ object.author }}, {{ object.date_created|date:"Y-m-d h:i" }})</td>
+		<td></td>
+	</tr>
+	{% for c in object.config.items %}
+	<tr style="background: {% cycle '#E0EAF4' 'whitesmoke' %};">
+		<td id="conf_{{ forloop.counter }}_pre">{{ c.0 }}</td>
+		<td id="conf_{{ forloop.counter }}_val">{{ c.1 }}</td>
+		<td>
+			<a href="javascript:;" onClick="$('#id_predicate').val($('#conf_{{ forloop.counter }}_pre').html());
+							$('#id_value').val($('#conf_{{ forloop.counter }}_val').html())">[Правка]</a>
+			<a href="javascript:;" onClick="$('#id_predicate').val($('#conf_{{ forloop.counter }}_pre').html());
+							$('#remove').val('True'); $('#conf_form').submit();">[Удалить]</a>
+		</td>
+	</tr>
+	{% endfor %}
+</table>
+
+<form action="" method="post" id="conf_form" style="border: 1px solid #4369B5; margin:2px; padding:5px;">
+	<div class="field {% if form.predicate.errors %} error {% endif %}" style="width:40% !important; float:left;">
+		<label for="{{ form.predicate.auto_id }}"><b>{{ form.predicate.label }}</b>&nbsp;&nbsp;</label>
+		{{ form.predicate }}
+		<span style="color:red;">{{ form.predicate.errors.as_text }}</span>
+	</div>
+	<div class="field {% if form.value.errors %} error {% endif %}" style="width:40%; float:left;">
+		<label for="{{ form.value.auto_id }}"><b>{{ form.value.label }}</b>&nbsp;&nbsp;</label>
+		{{ form.value }}
+	</div>
+
+	<input type="hidden" name="form_name" value="{{form_name}}" />
+	<input type="hidden" name="bid" value="{{ object.id }}" />
+	<input type="hidden" name="remove" id="remove" value="False" />
+	<input type="submit" value="Сохранить" />
+</form>
+{% endblock %}

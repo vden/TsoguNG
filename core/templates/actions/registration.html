@@ -1,0 +1,17 @@
+<h1>Регистрация</h1>
+<form method="post">
+<table>
+<col width="40%"><col>
+	{% for field in form %}
+	<tr>
+	<td><div class="field {% if field.errors %} error {% endif %}">
+		<label for="{{ field.auto_id }}" style="float:left;">{{ field.label }}</label>
+		{% if field.help_text %}<br/><div class="formHelp">{{ field.help_text }}</div>{% endif %}
+		<span style="color:red; float:right;">{{ field.errors.as_text }}</span><br/>
+		</td><td style="overflow:hidden">{{ field }}</td>
+	</tr>
+	{% endfor %}
+</table>
+<input type="submit" value="Зарегистрироваться" />&nbsp;
+<a href="http://www.tsogu.ru/video-spravka/registratsija-na-portale-tjumgngu/">Видео инструкция "Регистрация на портале ТюмГНГУ"</a>
+</form>

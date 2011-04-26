@@ -1,0 +1,71 @@
+<style>
+	#complain_form {
+		text-align: left;
+	}
+	#complain_form div.help {
+		margin: 10px 0;
+	}
+	#complain_form .help {
+		font-style: italic;
+	}
+	#complain_form .field-wrapper {
+		margin: 3px 0;
+	}
+	#complain_form input[type=text] {
+		width: 180px;
+	}
+	#complain_form label{
+		font-size: 120%;
+	}
+	#complain_form textarea{
+		height: 150px;
+	}
+	#complain_form ul.errorlist {
+		list-style: square outside none;
+	}
+	#complain_form ul.errorlist li{
+		display: inline;
+		background: none;
+		color: red;
+		border: none;
+	}
+</style>
+<form action="/portal/complain/" method="post" id="complain_form">
+	<div class="help">Написанный вами текст будет отправлен редактору портала на email.</div>
+	{{ form.non_field_errors }}
+	{% for hidden in form.hidden_fields %}
+		{% if hidden.errors %}
+		<div>{{ hidden.label }}:
+			{{ hidden.errors }}
+		</div>
+		{% endif %}
+	{% endfor %}
+	<table width="100%">
+		<col width="50%">
+		<col width="50%">
+		<tr>
+			<td align="left">{{ form.username.label_tag }}: {{ form.username }}{{ form.username.errors }}</td>
+			<td align="right">{{ form.email.label_tag }}: {{ form.email }}{{ form.email.errors }}</td>
+		</tr>
+		<tr><td colspan=2>{{ form.text }}{{ form.text.errors }}</td></tr>
+	</table>
+	{% for hidden in form.hidden_fields %}
+	{{ hidden }}
+	{% endfor %}
+	<input style="float: right;" type="submit" value="Отправить"/>
+</form>
+<script>
+	$('#complain_form').submit(function(){
+		$(this).find('input:text, textarea').each(function(index, el){el.value = $.trim(el.value);});
+		var loading = $('<div class=\'loading\'>Идёт загрузка...</div>');
+		var content = $(this).parent();
+		$.ajax({
+			url: '/portal/complain/',
+			type: 'POST',
+			data: $(this).serialize(),
+			beforeSend: function() {content.html(loading);},
+			success: function(data) {content.html(data)},
+			error: function() {content.text('Произошла ошибка при отправки данных формы')}
+		}); return false;
+	});
+</script>

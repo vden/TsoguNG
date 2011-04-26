@@ -1,0 +1,64 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% load pytils_dt %}
+{% load objects_by_tag %}
+{% load split %}
+{% load show_config %}
+
+{% block content %}
+<h1>{{object.title}}</h1>
+
+<div class="description">
+	{{ object.description }}
+</div>	
+
+{% ifnotequal request.GET.tag None %}
+
+Тема: «{{request.GET.tag|capfirst}}» <span style="padding-left:1.3em"><a href="{{object.get_absolute_url}}">Все темы</a></span>
+<table class="newsfeed">
+  {% objects_by_tag object request.GET.tag as objlist %}
+  {% for x in objlist %}
+  <tr><td class="news_line" style="padding-top:0.6em;padding-bottom:0.6em;"><p id="headline">
+	<b>{{ x.date_published|ru_strftime:"%d %B %Y г." }}</b>&nbsp;<a href="{{ x.get_absolute_url }}"><b>{{ x.title }}</b></a><br/>{{ x.description }}
+
+	{% show_config x %}
+
+	  {% load tsogu_comments %}
+	  <br/><i>Комментариев: {% comments_count x %}</i>
+  </p></td></tr>
+  {% endfor %}
+</table>
+
+{% else %}
+
+<table style="width:100%">
+<col width="50%"><col>
+{% for tag in object.config.show_tags_|split %}
+
+{% if not forloop.counter|divisibleby:"2" %}<tr>{% endif %}<td>
+{% objects_by_tag object tag as objlist %}
+<h4>{{ tag|capfirst }}</h4>
+
+{% for obj in objlist|slice:":4" %}
+  {% if forloop.first %}
+    <div style="clear:both;overflow:hidden;padding-top:0.6em;padding-bottom:0.6em;">
+      <p id="headline">	
+	  <b>{{ obj.date_published|ru_strftime:"%d %B %Y г." }}</b>&nbsp;<a href="{{ obj.get_absolute_url }}"><b>{{ obj.title }}</b></a><br/>{{ obj.description }}</p>
+    </div>
+  {% else %}
+    <div  style="padding-top:0.6em;padding-bottom:0.6em;" >
+      <b>{{obj.date_published|ru_strftime:"%d %B %Y г."}}</b>&nbsp;<a href="{{obj.get_absolute_url}}">{{obj.title}}</a>
+    </div>
+  {% endif %}
+{% endfor %}
+    <div style="padding-top:0.6em;padding-bottom:0.6em;" >
+      <a href="?tag={{tag}}">все передачи на тему «{{tag|capfirst}}»</a>
+    </div>
+
+</td>{% if forloop.counter|divisibleby:"2" or forloop.last %}</tr>{% endif %}
+
+{% endfor %}
+</table>
+
+{% endifnotequal %}
+{% endblock %}

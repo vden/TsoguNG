@@ -1,0 +1,17 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% block content %}
+{% block view_document_content %}
+{% load pytils_dt %}
+<h1 class="title">{{ object.title }}</h1>
+
+<div class="description">
+	{{ object.description }}
+</div>
+<br/>
+<div class="link_div">
+	<a target="_blank" href="{{object.url }}">{{ object.url }}</a>
+</div>
+<span class="discreet">{{ object.get_link_type_display }}</span>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,68 @@
+{% load cache %}
+
+{% cache 3600 menu request.main_object.get_absolute_url %}
+
+{% ifequal request.path "/trash/" %}
+	{% include "custom/static_menu_navigation.html" %}
+{% else %}
+	<div id="accordion_menu">
+		{% for item in menu %}
+
+		<h3 class="{% if item.get_child_nodes_menu %}ui_icon_folder{% else %}ui_icon_empty{% endif %}">
+			{% ifequal item.id obj.id %}
+				<span class="opened" onClick="$(this).dblclick();">{{ item.title }}</span>
+			{% else %}
+				{% ifequal item.get_class_name "Link" %}
+				<a class="" onClick="window.location=$(this).attr('href');" href="{{ item.get_link_absolute_url  }}">{{ item.title }}</a>
+				{% else %}
+				<a class="" onClick="window.location=$(this).attr('href');" href="{{ item.get_absolute_url  }}">{{ item.title }}</a>
+				{% endifequal %}
+			{% endifequal %}
+		</h3>
+		<div style="overflow:hidden !important; {% ifequal item.config.second_level_navigation 'open' %}display:block !important;{% endifequal %}" class="second-level">
+			{% for subitem in item.get_child_nodes_menu %}
+			<div>
+
+				{% ifequal subitem.get_class_name "Link" %}
+				<a href="{{ subitem.get_link_absolute_url }}"><span class="ui-icon ui-icon-triangle-1-e"></span>{{ subitem.title }}</a>
+				{% else %}
+				<a href="{{ subitem.get_absolute_url }}"><span class="ui-icon ui-icon-triangle-1-e"></span>{{ subitem.title }}</a>
+				{% endifequal %}
+			</div>
+			{% endfor %}
+		</div> 
+		{% endfor %}
+	</div> 
+	<br/>
+
+	<script type="text/javascript">
+		$(function() {
+			$("#accordion_menu").accordion({
+				active: false,
+				animated: false,
+				event: "click",
+				collapsible: true,
+				autoHeight: false,
+				clearStyle: true,
+				navigation: true
+				});
+		});
+	</script>
+	{% ifequal orig_obj.config.main_menu "True" %}
+		<div class="ui-corner-right main_menu_panel">
+			<div><a href="http://www.tsogu.ru/university"><span class="ui-icon ui-icon-triangle-1-e"></span>Университет</a></div>
+			<div><a href="http://www.tsogu.ru/institutes"><span class="ui-icon ui-icon-triangle-1-e"></span>Институты</a></div>
+			<div><a href="http://www.tsogu.ru/branchs"><span class="ui-icon ui-icon-triangle-1-e"></span>Филиалы</a></div>
+			<div><a href="http://www.tsogu.ru/npospo"><span class="ui-icon ui-icon-triangle-1-e"></span>НПО и СПО</a></div>
+			<div><a href="http://www.tsogu.ru/folder.2007-05-16.0903410628"><span class="ui-icon ui-icon-triangle-1-e"></span>Общее образование</a></div>
+			<div><a href="http://www.tsogu.ru/student"><span class="ui-icon ui-icon-triangle-1-e"></span>Студенту</a></div>
+			<div><a href="http://www.tsogu.ru/entrant"><span class="ui-icon ui-icon-triangle-1-e"></span>Абитуриенту</a></div>
+			<div><a href="http://www.tsogu.ru/1535"><span class="ui-icon ui-icon-triangle-1-e"></span>Выпускнику</a></div>
+			<div><a href="http://www.tsogu.ru/1720"><span class="ui-icon ui-icon-triangle-1-e"></span>Деятельность</a></div>
+			<div><a href="http://www.tsogu.ru/resources"><span class="ui-icon ui-icon-triangle-1-e"></span>Ресурсы</a></div>
+		</div>
+	{% endifequal %}
+
+{% endifequal %}
+
+{% endcache %}

@@ -1,0 +1,89 @@
+<style>
+.border_dashed {
+	border-bottom: 1px dashed #cccccc;
+}
+#entrant_block td {
+	width: 50%;
+}
+.newsfeed img {
+	max-width: 80px;
+	max-height: 80px;
+}
+.newsfeed {
+	background: #E2F0FE;
+	padding: 2px;
+}
+.newsfeed .h2menu {
+	border-bottom: 1px solid #8CACBB;
+}
+</style>
+
+{% load pytils_dt %}
+{% load nodes %}
+{% load cache thumbnail %}
+
+<h1>{{ object.title }}</h1>
+
+<div class="content page">
+	{{ object.text|safe }}
+</div>
+
+{% nodes "types" "News" "states" "на главной" "states" "опубликованный" "sort_fields" "-date_published" "tags" object.tags.all.0 "limit" "3" as news_list %}
+{% nodes "types" "AudioFile" "states" "опубликованный" "sort_fields" "-date_published" "tags" object.tags.all.0 "limit" "3" as audio_list %}
+{% nodes "types" "VideoFile" "sort_fields" "-date_published" "tags" object.tags.all.0 "limit" "3" as video_list %}
+
+<table id="entrant_block">
+	<tr><td>
+  <h2 class="h2menu" style="margin-bottom:5px;">Поступай в Нефтегаз!</h2>
+
+<table class="newsfeed">
+	<tr><td><h2 class="h2menu">Видео</h2></td></tr>
+	{% for x in video_list %}
+	<tr><td class="news_line"><p id="headline">	<span>{% if x.preview %}<img src="{% thumbnail x.preview.name 160x160 crop %}" alt="{{x.title}}"/>{% endif %}</span>
+			<b>{{ x.date_published|ru_strftime:"%d %B %Y." }}</b><br/>
+			<a href="{{ x.get_absolute_url }}"><b>{{ x.title }}</b></a><br/>{{ x.description }}
+	</p></td></tr>
+	{% endfor %}
+  <tr><td>
+  <div style="text-align:right">
+	  <a href="/news/tele/ob-institutakh-i-kolledzhakh-tjumgngu/">Архив видео</a>
+  </div>
+  </td></tr>
+
+</table>
+
+ <table class="newsfeed">
+	<tr><td><h2 class="h2menu">Аудио</h2></td></tr>
+	{% for x in audio_list %}
+	<tr><td class="news_line" style="padding-top:0.6em;padding-bottom:0.6em;"><p id="headline">
+			<b>{{ x.date_published|ru_strftime:"%d %B %Y." }}</b><br/>
+			<a href="{{ x.get_absolute_url }}"><b>{{ x.title }}</b></a><br/>{{ x.description }}
+	</p></td></tr>
+	{% endfor %}
+  <tr><td>
+  <div style="text-align:right">
+	  <a href="/news/radio/ja-vybiraju-neftegaz/">Архив аудио</a>
+  </div>
+  </td></tr>
+
+</table>
+</td>
+<td>
+  <h2 class="h2menu" style="margin-bottom:5px;">Новости приемной кампании</h2>
+  
+  <table class="newsfeed">
+  {% for news in news_list %}
+    <tr><td class="news_line" style="padding-top:0.6em;padding-bottom:0.6em;"><p align="justify" id="headline">
+      <span>{% if news.get_front_image %}<img src="{% thumbnail news.get_front_image.image.name 80x80 crop %}" alt="{{news.get_front_image.title}}"/>{% endif %}</span>
+      <b>{{news.date_published|ru_strftime:"%d %B"}}</b>&nbsp;&nbsp;
+      <a href="{{news.get_absolute_url}}">{{news.title}}</a><br/><br/>
+      <span>{{news.description}}</span>
+    </p></td></tr>
+  {% endfor %}
+  <tr><td>
+  <div style="text-align:right">
+	  <a href="/news/university/archive/action/newsline/?tags={{ object.tags.all.0.id }}">Архив новостей</a>
+  </div>
+  </td></tr>
+  </table>
+</tr></table>

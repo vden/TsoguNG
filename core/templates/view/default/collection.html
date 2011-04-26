@@ -1,0 +1,22 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% load nodes %}
+{% load pytils_dt %}
+
+{% block content %}
+<h1>{{ object.title }}</h1>
+<div> {{ object.description }} </div>
+
+
+{% nodes object.config.items as objlist %}
+
+<ul>
+{% for obj in  objlist %}
+<li><a href="{{obj.get_absolute_url}}">{{obj.title}}</a> &mdash; <span style="font-style:italic">{{obj.date_published|ru_strftime:"%d.%m.%Y"}}, <span style="color:grey">{{obj.author.first_name}} {{ obj.author.last_name }}</span></span><br/>
+  {{obj.description}}
+</li>
+{% empty %}
+По заданным критериям не найдено ни одного объекта.
+{% endfor %}
+</ul>
+{% endblock %}

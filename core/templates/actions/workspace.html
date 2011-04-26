@@ -1,0 +1,113 @@
+{% load pytils_dt %}
+
+<a href="http://www.tsogu.ru/help/"><img src="/media/img/banners/help_banner.gif" style="border:1px solid grey" alt="Система помощи"/></a>
+<a href="http://www.tsogu.ru/help/novyj-portal-tjumgngu/video-spravka/" style="display:block; margin:1em;"><b>Видео инструкции </b></a>
+
+<h1>Информационная система</h1>
+
+<ul>
+	<!--<li style="padding-top:0.4em;padding-bottom:0.4em"><a href="http://www.tsogu.ru/rights/go/9C5F3170-53CC-45C2-8C6A-49B50B835006/">Полнотекстовая база данных</a> </li>-->
+{% for app in apps %}
+<li style="padding-top:0.4em;padding-bottom:0.4em"><a href="{{app.url}}">{{ app.name }}</a> </li>
+{% endfor %}
+{% for app in external_apps %}
+<li style="padding-top:0.4em;padding-bottom:0.4em"><a href="{{ app.get_absolute_url }}/">{{ app.name }}</a></li>
+{% endfor %}
+</ul>
+
+{% if ownership %}
+<h1>Собственность</h1>
+<p style="color:gray;"><small>Разделы на портале владельцем которых Вы являетесь. На один раздел может быть несколько владельцев.</small></p>
+<ul>
+	{% for bo in ownership %}
+	<li><a href="{{bo.get_absolute_url}}">{{bo.title}}</a></li>
+	{% endfor %}
+</ul>
+{% endif %}
+
+{% if jobs %}
+<h1>Предлагаемые вакансии</h1>
+<ul>
+{% for vac in jobs %}
+<li>
+<a href="javascript:;" onclick="$('#vac_details_{{ vac.id }}').toggle();" class="local-link">{{ vac.name }} - {{ vac.organization.name }} ({{ vac.is_practice|yesno:"Практика,Постоянная работа" }})</a>
+<div id="vac_details_{{ vac.id }}" style="display:none;">
+	<ul>
+		{% if vac.city %}<li><b>Город:</b> {{ vac.city.name }}</li>{% endif %}
+		<li><b>Кол-во мест:</b> {{ vac.places_qty }}</li>
+		{% if vac.conditions %}<li><b>Условия:</b> {{ vac.conditions }}</li>{% endif %}
+		<li><b>Контактная информация:</b> {{ vac.contact.fio }}, тел. {{ vac.contact.phone }}, email: {{ vac.contact.email }}</li>
+	</ul>
+</div>
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if types %}
+<h1>Размещение объектов на портале</h1>
+<ul>
+	{% for t in types %}
+	<li><a href="{{t.default_place}}act/insert/?type={{t.type}}">Создать {{t.verbose_name}}</a> <br/>
+	<span class="discreet">{{ t.description }}</span></li>
+	{% endfor %}
+</ul>
+{% endif %}
+
+{% if schedule %}
+<h1>Расписание группы {{schedule.edu_group}}, <a style="font-size:0.9em" href="http://app.tsogu.ru/shedule_new/bin/groups.py?act=show&sgroup={{schedule.gcode}}" target="_blank">печатная версия</a></h1><br/>
+{% load col_eval %}
+{% for week in schedule.gtable %}
+<div>{{ week.0|capfirst }} неделя</div>
+<table width="100%" class="schedule" cellspacing="0" cellpadding="0">
+  {% for line in week.1 %}
+  <tr>
+    <td class="time_schedule">
+      {{ line.0 }}
+    </td>
+    {% for day in line.1 %}
+    <td class="schedule">
+      <table width="100%"  cellspacing="0" cellpadding="0">
+	{% col_eval day %}
+	<tr>
+	{% for subgroup in day %}
+	{% ifnotequal forloop.counter0 0 %}
+	<td class="internal sbordered">
+	  {{ subgroup|default_if_none:"&nbsp;" }}
+	</td>
+	{% else %}
+	<td class="internal">
+	  {{ subgroup|default_if_none:"&nbsp;" }}
+	</td>
+	{% endifnotequal %}
+	{% empty %}
+	<td>&nbsp;</td>
+	{% endfor %}
+      </tr></table>
+    </td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+<br/>
+{% endfor %}
+{% endif %}
+
+{% if last_objects %}
+<h1>Последние измененные объекты</h1>
+<ul>
+{% for t in last_objects %}
+<li> <a href="{{ t.get_absolute_url }}">{{ t.title }}</a>&nbsp;<span style="color:grey">({{ t.get_class_name_i18n }})</span> &mdash; {{ t.date_modified|ru_strftime:"%d.%m.%Y %H:%M" }} &mdash;<i> {{ t.state.name }}</i> </li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if ws_actions %}
+<h1>Дополнительные действия</h1>
+
+<ul>
+{% for act in ws_actions %}
+  <li> <a href="{{act.url}}">{{act.name}}</a> </li>
+{% endfor %}
+</ul>
+{% endif %}

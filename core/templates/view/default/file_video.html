@@ -1,0 +1,92 @@
+{% extends "forms/default/wrapper.html" %}
+{% block content %}
+<h1>{{ object.title }}</h1>
+{% load pytils_dt %}
+
+<div style="overflow:hidden;width:100%">
+
+<div style="float:left">{{object.date_published|ru_strftime:"%d %B %Y г."}}</div>
+{% load range %}
+<div style="float:right">
+
+<script>$(function(){
+ $('.auto-submit-star').rating({
+  callback: function(value, link){
+    if(value!=''){
+    $.getJSON(
+       '{{object.get_absolute_url}}act/set_rate/?rating='+this.value,
+       function(result){
+         alert(result);
+         window.location.reload(true);
+       })
+    } } 
+})});</script>
+
+<div class="Clear">
+{% range "0" "5" "0.5" as rb %}
+{% for i in rb %}
+<input class="auto-submit-star {half:true}" type="radio" name="rating" value="{{i}}" {% ifequal i object.rating %}checked="checked"{% endifequal %}/>
+{% endfor %}
+</div>
+
+</div>
+
+<div style="float:right">Оценка:</div>
+
+</div>
+
+<table border="0">
+<col width="430px"><col>
+<tr><td style="vertical-align:top">
+<div  style="display:block;width:423px;height:340px;" id="player"> </div>
+
+<!-- this script block will install Flowplayer inside previous anchor tag --> 
+<script language="JavaScript"> 
+	flowplayer("player", "{{MEDIA_URL}}flowplayer-3.1.2.swf", { 
+	playlist: [
+	{% if object.is_ready %}
+	     {
+                url: "{{object.preview.url}}",
+	        autoPlay: true
+	  /*      scaling: "orig" */
+	     },
+	     {
+	        url: "{{object.path.url}}",
+	        autoPlay: false,
+	        autoBuffering: true
+	 
+	     }
+	{% else %}
+	{	 
+                url: "{{MEDIA_URL}}img/question_y.png",
+	        autoPlay: true
+	  /*      scaling: "orig" */
+	     },
+	{% endif %}
+	],
+	clip: {},
+	play: {
+        	replayLabel: "Смотреть снова"
+	}
+	}); 
+</script>
+
+</td><td style="vertical-align:top">
+{% if object.is_ready %}
+<div><a href="{{object.path.url}}">Скачать видео ({{object.path.size|filesizeformat}})</a></div>
+{% endif %}
+
+{% if object.description %}
+<div class="description" style="padding-top:1.5em">
+	{{ object.description }}
+</div>	
+{% endif %}
+
+{% load show_config %}
+{% show_config object %}
+
+</td></tr></table>
+
+{% load tsogu_comments %}
+{% comments %}
+{% endblock %}

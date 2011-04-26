@@ -1,0 +1,28 @@
+{% extends "forms/default/wrapper.html" %}
+
+
+{% block content %}
+<h2>{{ object.title }}</h2>
+
+<div class="description page">
+	{{ object.description }}
+</div>
+
+<hr/>
+
+<ul>
+	{% load nodes %}
+	{% load pytils_dt %}
+	{% nodes "parents" object.get_absolute_url "types" "Dissertation" "states" "опубликованный" as objs %}
+	{% regroup objs|dictsortreversed:"date_defend" by date_defend as date_list %}
+	{% for date in date_list %}
+		{% for x in date.list|dictsort:"title" %}
+		<li>
+		<span>{{x.date_defend|ru_strftime:"%d.%m.%Y "}} </span>
+		<a href="{{ x.get_absolute_url }}"><b>{{ x.title }}</b></a>
+		<span>({{x.date_published|ru_strftime:"%d.%m.%Y "}})</span>
+		</li>
+		{% endfor %}
+	{% endfor %}
+</ul>
+{% endblock %}

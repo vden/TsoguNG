@@ -1,0 +1,54 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% load pytils_dt %}
+{% load nodes %}
+
+{% block content %}
+<h1>{{ object.title }}</h1>
+<div style="text-align:left;padding-bottom: 1.5em">{{ object.date_published|ru_strftime:"%d %B %Y" }}, Тэги: {{object.posttags.all|join:", " }}</div>
+
+{% block photo_for_page %}
+{% nodes "types" "Photo" "parents" object.get_absolute_url "sort_fields" "position" "states" "опубликованный" as images %}
+{% if images %}
+<div style="margin: -15px 0 10px 10px; float: right; background-color: #DFE9F4">
+	{% for photo in images %}
+	<a href="{{ photo.image.url }}" class="thickbox" rel="news-{{ object.id }}-gallery"
+		title="{{ photo.title }}{% if photo.description %}. {{ photo.description }}{% endif %}">
+		<img border="0" src="{{ photo.thumbnail.url }}" class="photo page" style="display: block; margin: 10px;" alt="{{ photo.title }}" />
+	</a>
+	{% endfor %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% if object.text %}
+<div class="content page">
+	{{ object.text|safe }}
+</div>
+
+
+{% nodes "types" "File" "parents" object.get_absolute_url "sort_fields" "-date_published" "states" "опубликованный" as files %}
+
+{% if files %}
+<div  style="margin: 15px 10px; width: 80%; padding: 10px 15px; background-color: #DFE9F4">
+  Вложенные файлы:
+  <ul>
+    {% for file in files %}
+    <li><a href="{{ file.get_absolute_url }}">{{file.title}}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% if object.config.has_comments %}
+	{% load tsogu_comments %}
+	{% comments %}
+{% endif %}
+
+
+{% else %}
+{% load page_include %}
+
+{#% page_include "index_html" object %#}
+{% endif %}
+{% endblock %}

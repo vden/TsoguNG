@@ -1,0 +1,19 @@
+{% load trunc %}
+{% load cache thumbnail %}
+<p id="searchresults" style="padding: 0px;text-indent:0px">
+
+{% for k,v in groups.items %}
+{% ifchanged k %}
+<span class="category">{{ k }}</span>
+{% endifchanged %}
+
+{% for obj in v %}
+<a href="{{obj.get_absolute_url}}" title="{{obj.title|escape}}"><img src="{% thumbnail obj.get_front_image.image.name 48x48 crop %}" alt=""/>
+<span class="searchheading">{{ obj.title|trunc:25 }}</span>
+<span>{{ obj.description|trunc:60 }}</span>
+</a>
+
+{% endfor %}
+
+{% endfor %}
+</p>

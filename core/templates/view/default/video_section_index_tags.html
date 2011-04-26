@@ -1,0 +1,65 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% load pytils_dt %}
+{% load objects_by_tag %}
+{% load split %}
+{% load show_config %}
+{% load cache thumbnail %}
+
+{% block content %}
+<h1>{{object.title}}</h1>
+
+<div class="description">
+	{{ object.description }}
+</div>	
+
+{% ifnotequal request.GET.tag None %}
+
+Тема: «{{request.GET.tag|capfirst}}» <span style="padding-left:1.3em"><a href="{{object.get_absolute_url}}">Все темы</a></span>
+<table class="newsfeed">
+  {% objects_by_tag object request.GET.tag as objlist %}
+  {% for x in objlist %}
+  <tr><td class="news_line"><p id="headline">	<span>{% if x.preview %}<img src="{{x.get_absolute_url}}image/medium/1/" alt="{{x.title}}"/>{% endif %}</span>
+	<b>{{ x.date_published|ru_strftime:"%d %B %Y г." }}</b>&nbsp;<a href="{{ x.get_absolute_url }}"><b>{{ x.title }}</b></a><br/>{{ x.description }}
+
+	{% show_config x %}
+
+	{% load tsogu_comments %}
+	<br/><br/><i>Комментариев: {% comments_count x %}</i>
+  </p></td></tr>
+  {% endfor %}
+</table>
+
+{% else %}
+
+<table style="width:100%">
+<col width="50%"><col>
+{% for tag in object.config.show_tags_|split %}
+
+{% if not forloop.counter|divisibleby:"2" %}<tr>{% endif %}<td>
+{% objects_by_tag object tag as objlist %}
+<h4>{{ tag|capfirst }}</h4>
+
+{% for obj in objlist|slice:":4" %}
+  {% if forloop.first %}
+    <div style="clear:both;overflow:hidden">
+	    <p id="headline">	<span>{% if obj.preview %}<img src="{{x.get_absolute_url}}image/medium/1/" alt="{{obj.title}}"/>{% endif %}</span>
+	  <b>{{ obj.date_published|ru_strftime:"%d %B %Y г." }}</b>&nbsp;<a href="{{ obj.get_absolute_url }}"><b>{{ obj.title }}</b></a><br/>{{ obj.description }}</p>
+    </div>
+  {% else %}
+    <div style="padding:3px 0 3px 6px" >
+      <b>{{obj.date_published|ru_strftime:"%d %B %Y г."}}</b>&nbsp;<a href="{{obj.get_absolute_url}}">{{obj.title}}</a>
+    </div>
+  {% endif %}
+{% endfor %}
+    <div style="padding:3px 0 3px 6px" >
+      <a href="?tag={{tag}}">все сюжеты на тему «{{tag|capfirst}}»</a>
+    </div>
+
+</td>{% if forloop.counter|divisibleby:"2" or forloop.last %}</tr>{% endif %}
+
+{% endfor %}
+</table>
+
+{% endifnotequal %}
+{% endblock %}

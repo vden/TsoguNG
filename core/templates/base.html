@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+{% spaceless %}
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Language" content="ru-ru" />
+
+  <title> {{ main_object.title }} &mdash; Тюменский Государственный Нефтегазовый Университет</title>
+
+  {% if False %}
+  	<script type="text/javascript" src="/media/js/tiny_mce/tiny_mce.js"></script>
+  {% endif %}
+
+  <script type="text/javascript" src="{{ MEDIA_URL }}merged/compiled.{{js}}.js"></script>
+
+  {% for css in csses %}
+  {% ifnotequal css.path 0 %}
+  	<link rel="stylesheet" href="{{ MEDIA_URL }}merged/{{css.type}}.compiled.{{css.path}}.css" type="text/css" media="{{css.type}}"></link>
+  {% endifnotequal %}
+  {% endfor %}
+  {% if main_object.config.rss_show %}
+  
+	<link rel="alternate" type="application/rss+xml" title="RSS" 
+		href="{{ main_object.get_absolute_url }}RSS/{{ main_object.config.rss_type}}"></link>
+
+  {% endif %}
+  {% block extend_media %}{% endblock %}
+
+{% load calendar %}
+{% load pytils_dt %}
+
+<meta name="Document-state" content="Dynamic">
+<meta name="keywords" lang="ru-en" content="крупнейший вуз, Западная Сибирь, популярный, нефтегазовый университет, технический вуз, самый востребованный, университет, Тюменская область, эффективное трудоустройство, престижные специальности, научно-образовательный потенциал, ТюмГНГУ, экспорт образовательных услуг, набор иностранных студентов, русский язык как иностранный, европейское приложение, диплом, Болонский процесс, международное сотрудничество, договоры, иностранные предприятия, tyumen, siberia, oil, gas, univercity, student, popular, europe, Bolon process">
+
+<style type="text/css">
+  img.png {
+  behavior: url("{{ MEDIA_URL }}img/pngbehavior.htc");
+  }
+</style>
+
+<meta http-equiv="imagetoolbar" content="no" />
+
+</head>
+
+<body>
+
+<!--
+ onload="document.getElementById('load_div').style.display = 'none'; document.getElementById('content_div').style.display=''">
+
+<div id="load_div" align="center" style="z-index:1;margin-left: auto; margin-right: auto; margin-top: 30%">
+Подождите, идет загрузка страницы...<br />
+<img src="{{ MEDIA_URL }}img/loading.gif" />
+</div>
+-->
+  <div style="margin-left: auto; margin-right: auto; position: relative; top:0px;background:transparent url('{{MEDIA_URL}}img/bg_crane.gif') no-repeat bottom left" id="content_div">
+<table align="center" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-left: 1px solid #CCCCCC; border-right: 1px solid #CCCCCC;z-index: 5"><tr><td width="100%">
+      <div id="portal-top">
+        <a class="hiddenStructure"
+           href="/#documentContent">Перейти к содержимому.</a>
+<table align="center" cellpadding="0" cellspacing="0" width="100%" height="133">
+	<tr>
+<td width="100%" style="height: 133px; text-align:left; width:100%; background: #3B8CD6 url('{{ MEDIA_URL }}img/bg.jpg') no-repeat right">
+
+<table border="0" cellspacing="0" cellpadding="0" style="width:390px;height:133px">
+<col width="43"><col width="23"><col width="26"><col width="28"><col width="28"><col width="242">
+<tr><td colspan="6"><img src="{{ MEDIA_URL }}img/bg_left_top.png" width="390" height="114" class="png" /></td>
+<tr>
+	<td><img src="{{ MEDIA_URL }}img/bg_left_1.png" width="43" height="19" /></td>
+	<td><a href="/"><img src="{{ MEDIA_URL }}img/bg_left_2.png" width="23" height="19" /></a></td>
+	<td><a href="/portal/sitemap/"><img src="{{ MEDIA_URL }}img/bg_left_3.png" width="26" height="19" /></a></td>
+	<td><a href="mailto:webmaster@tsogu.ru"><img src="{{ MEDIA_URL }}img/bg_left_4.png" width="28" height="19" /></a></td>
+	<td><a href="http://www.tsogu.info"><img src="{{ MEDIA_URL }}img/bg_left_5.png" width="28" height="19" /></a></td>
+	<td><img src="{{ MEDIA_URL }}img/bg_left_6.png" width="242" height="19"  /></td>
+</tr>
+</table>
+<div style="position: absolute; top:0; left:0;
+background: transparent no-repeat right; width:100%; height: 114px;text-align:left">
+<!--
+<a href="/"><img src="{{ MEDIA_URL}}img/title_9may_tsogu.png" class="png" width="467" height="133" style="margin:0px auto; display: block"/></a> 
+-->
+<!-- <a href="/"><img src="{{ MEDIA_URL }}img/title_2008_8mar.png" class="png" width="811" height="95" style="margin-top:22px"/></a>  -->
+<!-- <a href="/"><img src="{{ MEDIA_URL}}img/title_ny_2008.png" class="png" width="658" height="88" style="margin-top:22px"/></a> -->
+<a href="/"><img src="{{ MEDIA_URL }}img/new_title.png" class="png" width="437" height="76" style="display:block;margin:22px auto;" /></a>
+</div>
+</td></tr>
+</table>
+<div id="portal-breadcrumbs">
+  вы здесь: <a href="/">Главная</a>
+  {% for bc in main_object.breadcrumbs %}
+&nbsp;&rarr;&nbsp;{% if forloop.last %}{{ bc.name }}{% else %}
+<a href="{{ bc.url }}">{{ bc.name }}</a>
+{% endif %}
+  {% endfor %}
+</div>
+
+
+<tr><td>
+
+<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody>
+<tr>
+<!-- <td id="portal-personaltools2" width="100" align="left" style="padding-left: 1em;">
+<a href="/sitemap">карта сайта</a>
+</td> -->
+<td>
+<ul id="portal-personaltools">
+{% if request.user.is_authenticated %}
+вы вошли как <span class="portalUser"> {{ request.user }} </span>
+{% else %}
+<span> вы не вошли в систему </span>
+{% endif %}
+
+{% load actions %}
+{% actions "user" as user_actions %}
+{% for act in user_actions %}
+<li><a href="/portal/{{ act.funcname }}">{{ act.verbose_name }}</a></li>
+{% endfor %}
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+
+{# <span>{{ a }}</span> #}
+{# {% endfor %}  #}
+
+<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<tr>
+{% autoescape off %}
+{% if left_column %}
+<td style="vertical-align:top;width:18%">{{ left_column }}</td>
+{% endif %}
+<td style="vertical-align:top">
+
+<table width="100%" style="font-size:130%" class="topmenu">
+<col width="20%"><col width="20%"><col width="20%"><col width="20%"><col width="20%">
+<tr>
+<td class="noborder"><a href="/entrant/">Поступающим</a></td><td><a href="/student/">Студентам и учащимся</a></td><td
+><a href="/1535/">Выпускникам</a></td><td
+><a href="/prepodavateljam-i-sotrudnikam/">Преподавателям и сотрудникам</a></td
+><td><a href="/partneram-i-rabotadateljam/">Партнёрам и работодателям</a></td>
+</tr>
+</table>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="padding-top:0.5em;">
+<tr>
+<td style="vertical-align:top">
+
+<div class="documentContent">
+{% if request.portal_message %}
+<div class="portalMessage">
+	{% for m in request.portal_message %}
+	<span style="color: {{ m.color }};">
+		<b>{{ m.verb_type }} </b>{{ m|urlize }}
+	</span><br/>
+	{% endfor %}
+</div>
+{% endif %}
+{# Рейтинг: {{ request.main_object.rating }} #}
+
+{{ main_column }}
+</div></td>
+{% if right_column %}
+<td style="vertical-align:top;width:295px">
+
+{{ right_column }}
+
+</td>
+{% endif %}
+{% endautoescape %}
+</tr>
+</table>
+
+</td></tr>
+</table>
+
+</td></tr>
+<tr><td>
+		<div>
+
+{% load complain %}
+{% complain %}
+
+{% comment %}
+{% if main_object.parent %}
+<div style="margin:0 256px; font-size:80%;">
+Идентификатор страницы: {{ main_object.id }}
+{% for resp in main_object.get_responsibility %}
+<br/>Ответственный за содержимое данной страницы (<a href="http://www.tsogu.ru/university/subdivisions/uits/infs/normativnye-dokumenty/unknown_object-696737/" target="_blank">приказ  &#8470;46  от 18.02.2010г.</a>): {{resp.position}} {{resp.user}}, {{resp.telephone}}.
+{% endfor %}
+</div>
+{% endif %}
+{% endcomment %}
+<div style="width:100%;clear:both;text-align:center">
+
+{% load counter %}
+{% counter %}
+
+<hr style="color:#ccd9e7;width:65%" noshade />
+&copy; 2000-{% now "Y" %} Тюменский государственный нефтегазовый университет<br/>
+<a style="padding-right:1em;" href="mailto:webmaster@tsogu.ru">Техническая поддержка</a>
+<a style="padding-right:1em;" href="/soft/">Программное обеспечение</a>
+<a style="padding-right:1em;" href="/concept/">Сервер ТюмГНГУ</a>
+<a href="mailto:webmaster@tsogu.ru">Замечания по работе сайта</a>
+
+
+<!-- foot -->
+</div>
+</td></tr></table>
+
+<!-- FOOT>> -->
+
+</div>
+
+<script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "tsogu.ru/media/js/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+	try {
+		var pageTracker = _gat._getTracker("UA-13084932-1");
+		pageTracker._trackPageview();
+	} catch(err) {}
+</script>
+</body>
+{% endspaceless %}

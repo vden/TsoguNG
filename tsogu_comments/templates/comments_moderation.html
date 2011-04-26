@@ -1,0 +1,91 @@
+<style>
+table.moderation {
+	padding: 0;
+	margin: 0;
+	border-collapse: collapse;
+	width: 100%;
+	border: 1px solid gray;
+}
+.moderation td, .moderation th{
+	border: 1px solid gray;
+	border-collapse: collapse;
+	padding: 3px;
+	vertical-align: middle;
+}
+.moderation th {
+	background-color: #bbbbbb;
+}
+.moderation td.center {
+	text-align: center;
+}
+.moderation tr.gray {
+	background-color: #eeeeee;
+}
+.moderation tbody tr:hover {
+	background-color: #dddddd;
+}
+#moderate-ok, #moderate-del {
+	border: none;
+	background: transparent;
+	margin: 3px;
+}
+#moderate-ok:hover, #moderate-del:hover {
+	border: 1px gray solid;
+	margin: 2px;
+}
+</style>
+<h1>Модерирование комментариев ({{ comments|length }})</h1>
+<br/>
+<table class='moderation'>
+	<col width='20px'>
+	<col width='200px'>
+	<col width='*'>
+	<col width='200px'>
+	<col width='100px'>
+	<col width='100px'>
+	<thead>
+		<th>#</th>
+		<th>Автор</th>
+		<th>Текст</th>
+		<th>Объект</th>
+		<th>Дата</th>
+		<th>Действия</th>
+	</thead>
+	<tbody>
+		{% for comment in comments%}
+		<tr {% cycle "class='gray'" ""%} comment_id="{{ comment.id }}">
+			<td>{{ forloop.counter }}</td>
+			<td>{{ comment.username }}
+				{% if comment.author %} ({{ comment.author }}){% endif %}
+				{% if comment.email %} - {{ comment.email }}{% endif %}
+			</td>
+			<td>{{ comment.text }}</td>
+			<td {% if comment.re %} title="{{ comment.re.text }}" {% endif %}><a href="{{ comment.base_object.get_absolute_url }}" target="_blank">
+					{{ comment.base_object.title }} ({{ comment.base_object.type }})</a>
+				{% if comment.re %} re: {{ comment.re.date_created|date:"d.m.Y H:i"}} ({{comment.re.username}}){% endif %}
+			</td>
+			<td class="center">{{ comment.date_created|date:"d.m.Y H:i" }}</td>
+			<td class="center">
+				<input id="moderate-ok" action="publish" type='image' alt='ok' title="Опубликовать" src="{{ MEDIA_URL }}img/icons/apply.png"/>
+				<input id="moderate-del" action="remove" type='image' alt='del' title="Удалить" src="{{ MEDIA_URL }}img/icons/cancel.png"/>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+<script>
+	$("table.moderation input").click(function() {
+		var td = $(this).parent();
+		var comment_id = td.parent().attr("comment_id");
+		var action = $(this).attr('action');
+		var colors = {'publish': '#BDF69A', 'remove':'#FFB9A6'};
+		$.ajax({
+			url: '/comments/moderation/'+action+'/',
+			type: 'POST',
+			data: {'comment_id': comment_id},
+			beforeSend: function() {td.html(". . .");},
+			success: function(data) {td.html(data).parent().css('background-color', colors[action]);},
+			error: function() {td.html("Error :(");}
+		})
+	})
+</script>

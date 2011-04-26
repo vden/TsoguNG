@@ -1,0 +1,73 @@
+table.request {
+	padding: 0;
+	margin: 0;
+	border-collapse: collapse;
+	width: 100%;
+	border: 1px solid gray;
+}
+
+.request td, .request th{
+	border: 1px solid gray;
+	border-collapse: collapse;
+	padding: 3px;
+}
+
+.request th {
+	background-color: #bbbbbb;
+}
+
+.request tr.gray {
+	background-color: #eeeeee;
+}
+
+.request tbody tr:hover {
+	cursor: pointer;
+	background-color: #dddddd
+}
+
+div.right_align {
+	text-align: right;
+	padding: 3px;
+	font-size: 160%;
+}
+
+#request_content h3 {
+	text-align: center;
+}
+
+#request_content label {
+	font-weight: bold;
+}
+
+#request_text {
+	border-top:1px dashed gray;
+	border-bottom:1px dashed gray;
+}
+
+.request_change {
+	border-bottom:1px dashed gray;
+}
+
+#request_content p, #request_text {
+	font-size: 10pt;
+}
+
+#profile_content label {
+	font-weight: bold;
+	margin: 0 5px;
+}
+
+#profile_content .fieldWrapper {
+	margin: 3px 0;
+}
+
+#profile_content .fieldWrapper label{
+	display: block;
+	float: left;
+	width: 200px;
+	text-align: right;
+}
+
+#profile_content p {
+	padding: 3px 0;
+}

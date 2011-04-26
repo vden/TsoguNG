@@ -1,0 +1,65 @@
+{% load pytils_dt %}
+{% load page_include %}
+{% load objects_by_tag %}
+{% load show_config %}
+{% load nodes %}
+{% load cache thumbnail %}
+
+<h1>Телевидение ТюмГНГУ</h1>
+<div class="top-kvartal ui-corner-all">
+
+<h2>«Студенческий квартал»</h2>
+  <table class="newsfeed">
+    {% nodes "types" "VideoFile" "states" "опубликованный" "parents" "/news/tele/kvartal" "sort_fields" "-date_published" "limit" "1" as kvartal %}
+	{% for x in kvartal %}
+	<tr><td><p id="headline">	<span>{% if x.preview %}<img src="{{x.get_absolute_url}}image/small/1/" alt="{{x.title}}"/>{% endif %}</span>
+	  <b>{{ x.date_published|ru_strftime:"%d %B %Y г." }}</b>&nbsp;<a href="{{ x.get_absolute_url }}"><b>{{ x.title }}</b></a><br/>{{ x.description }}
+
+	  {% show_config x %}
+	  {% load tsogu_comments %}
+	</p></td></tr>
+	{% endfor %}
+</table>
+
+</div>
+
+<h2>Новости телестудии</h2>
+{% objects_by_tag "/news/university" "телерадиостудия" as news %} 
+<table class="newsfeed">
+{% for x in news|slice:":5" %}
+<tr><td class="news_line"><p id="headline">	<span>{% if x.preview %}<img src="{{x.get_absolute_url}}image/medium/1/" alt="{{x.title}}"/>{% endif %}</span>
+	  <b>{{ x.date_published|ru_strftime:"%d %B %Y г." }}</b>&nbsp;<a href="{{ x.get_absolute_url }}"><b>{{ x.title }}</b></a><br/>{{ x.description }}
+
+	</p></td></tr>	
+{% endfor %}
+</table>
+
+{% nodes "types" "VideoFile" "states" "опубликованный" "sort_fields" "-date_published" "limit" "8" "parents" "/news/tele/" "cascade" True as last_video %}
+
+<div style="font-size:160%;padding-bottom:0.3em;padding-top:0.4em"><a id="llink" class="local-link-active" href="javascript:;" onClick="$('#popular_video').hide();$('#last_video').show();$('#llink').attr('class', 'local-link-active');$('#plink').attr('class', 'local-link')">Новые видеосюжеты</a>&nbsp;<a id="plink" class="local-link" href="javascript:;" onClick="$('#last_video').hide();$('#popular_video').show();$('#llink').attr('class', 'local-link');$('#plink').attr('class', 'local-link-active')">Популярные видеосюжеты</a></div>
+<div id="last_video"><table class="videothumbs">
+<col width="20%"><col width="20%"><col width="20%"><col width="20%">
+{% for x in last_video %}
+{% if forloop.counter0|divisibleby:"4" or forloop.first %}<tr>{% endif %}<td>
+
+		<a href="{{x.get_absolute_url}}">{% if x.preview %}<img src="{{x.get_absolute_url}}image/medium/1/" alt="{{x.title}}"/>{% endif %}<br/>
+{{x.title}}</a>
+
+</td>{% if forloop.counter|divisibleby:"4" or forloop.last %}</tr>{% endif %}
+{% endfor %}
+</table>
+</div>
+<div style="display:none" id="popular_video">
+<table class="videothumbs">
+<col width="20%"><col width="20%"><col width="20%"><col width="20%">
+{% nodes "types" "VideoFile" "states" "опубликованный" "sort_fields" "-rating" "limit" "8" "parents" "/news/tele/" "cascade" True as rated_video %}
+{% for x in rated_video %}
+{% if forloop.counter0|divisibleby:"4" or forloop.first %}<tr>{% endif %}<td>
+
+		<a href="{{x.get_absolute_url}}">{% if x.preview %}<img src="{{x.get_absolute_url}}image/medium/1/" alt="{{x.title}}"/>{% endif %}<br/>
+{{x.title}}</a><br/>(рейтинг: {{x.rating}})
+
+</td>{% if forloop.counter|divisibleby:"4" or forloop.last %}</tr>{% endif %}
+{% endfor %}
+</table>
+</div>

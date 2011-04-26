@@ -1,0 +1,86 @@
+{% load cache thumbnail %}
+
+{# {% include "document_base.html" %} #}
+
+{% load pytils_dt %}
+{% load banner %}
+{% load nodes %}
+{% load split %}
+{% load objects_by_tag %}
+
+<div id="flash_div" style="padding: 5px; border: 0px solid #CCCCCC;background-color:#E2F0FE">
+{# {% text_banners request "tbgroup1" %} #}
+<h2 class="h2menu">Главные события месяца</h2>
+<div style="text-align:center">
+{% cache_banners request "tbmain" 160 120 %}
+</div></div>
+
+{% cache 3600 main_news %}
+{% nodes "types" "News" "states" "на главной" "parents" "/news/university" "sort_fields" "-date_published" "limit" "12" "tags" object.config.main_news_tags_  as topnews %}
+{% nodes "types" "News" "states" "на главной" "parents" "/news/university" "sort_fields" "-date_published" "limit" "7" "tags" object.config.unit_news_tags_ as allnews %}
+
+<h2 class="h2menu">Новости</h2>
+
+{% for news in topnews|slice:":5" %}
+<div style="border-bottom: 1px dashed #cccccc;">
+<table width="100%">
+	<tr><td><p align="justify" id="headline">
+		<span>{% if news.get_front_image %}<img src="{{news.get_front_image.thumbnail.url}}" alt="{{news.get_front_image.title}}"/>{% endif %}</span>
+		<b>{{news.date_published|ru_strftime:"%d %B"}}</b>&nbsp;&nbsp;
+		<a href="{{news.get_absolute_url}}">{{news.title}}</a><br/><br/>
+		<span>{{news.description}}</span>
+	</p></td></tr>
+</table>
+
+</div>
+{% endfor %}
+
+{% for news in topnews|slice:"5:" %}
+<div style="border-bottom: 1px dashed #cccccc;">
+	<b>{{news.date_published|ru_strftime:"%d %B"}}</b>&nbsp;&nbsp;
+	<a href="{{news.get_absolute_url}}">{{news.title}}</a><br/><br/>
+</div>
+{% endfor %}
+<div style="text-align:right;padding-top:2px;padding-bottom:4px;"><span><a href="/portal/photoline/">Фотолента новостей</a></span><span style="padding-left: 3em"><a href="/portal/newsline/">Все новости</a></span></div>
+
+
+{# новости подразделений #}
+<h2 class="h2menu">Новости подразделений</h2>
+{% for news in allnews %}
+<div style="border-bottom: 1px dashed #cccccc;padding: 3px">
+	<b>{{news.date_published|ru_strftime:"%d %B"}}</b>&nbsp;&nbsp;
+	<a href="{{news.get_absolute_url}}">{{news.title}}</a>&nbsp;<span style="color:grey">({{ news.tags.all|join:", " }})</span>
+</div>
+{% endfor %}
+
+<h2 class="h2menu">Деятельность университета</h2>
+<table style="width:100%" cellspacing="10">
+<col width="50%"><col>
+{% for tag in object.config.show_activity_tags_|split %}
+
+{% if not forloop.counter|divisibleby:"2" %}<tr>{% endif %}<td>
+{% objects_by_tag "/news/university/" tag as objlist %}
+<div class="section-header">{{ tag|capfirst }}</div>
+
+{% for obj in objlist|slice:":4" %}
+  {% if forloop.first %}
+    <div style="clear:both;overflow:hidden">
+	    <p id="headline">	<span>{% if obj.get_front_image %}<img src="{% thumbnail obj.get_front_image.image.name 80x80 crop %}" alt="{{obj.title}}"/>{% endif %}</span>
+	  <b>{{ obj.date_published|ru_strftime:"%d %B" }}</b>&nbsp;<a href="{{ obj.get_absolute_url }}"><b>{{ obj.title }}</b></a><br/>{{ obj.description }}</p>
+    </div>
+  {% else %}
+    <div style="padding:3px 0 3px 6px">
+      <b>{{obj.date_published|ru_strftime:"%d %B"}}</b>&nbsp;<a href="{{obj.get_absolute_url}}">{{obj.title}}</a>
+    </div>
+  {% endif %}
+{% endfor %}
+   <!-- <div style="padding:3px 0 3px 6px" >
+      <a href="?tag={{tag}}">все сюжеты на тему ??{{tag|capfirst}}??</a>
+    </div> -->
+
+</td>{% if forloop.counter|divisibleby:"2" or forloop.last %}</tr>{% endif %}
+
+{% endfor %}
+</table>
+
+{% endcache %}

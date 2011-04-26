@@ -1,0 +1,46 @@
+{% comment %}
+<table class="ploneCalendar ui-corner-top" cellspacing="0" style="width:100%; padding: 0px; margin: 0px" id="thePloneCalendar">
+<thead>
+<tr><th style="background-color:transparent" colspan="7">{% now "F Y" %}</th></tr>
+<tr class="weekdays">
+{% for day in headers %}
+<td>{{ day|date:"D"|slice:":3" }}</td>
+{% endfor %}</tr></thead>
+<tbody>
+{% for week in calendar %}
+<tr>
+{% for day in week %}
+{% if not day.in_month %}<td>&nbsp;</td>{% else %}
+<td {% if day.event and day.today %} class="todayevent" {% endif %}
+{% if day.today and not day.event %} class="todaynoevent" {% endif %}
+{% if not day.today and day.event %} class="event" {% endif %}>{% if day.event %}<a href="javascript:;">{{ day.day|date:"j" }}</a>{% else %}{{ day.day|date:"j" }}{% endif %}</td>{% endif %}
+{% endfor %}
+</tr>
+{% endfor %}
+<tr><td colspan="7" id='study_week' style="background-color:#a5cbed; text-align: center;
+                     border: 0; border-top:1px solid #8cacbb;width:100%;padding:0; color: #333">
+                  <span>{{ cweek }}</span></td>
+            </tr></tbody>
+</table>
+{% load pytils_dt %}
+
+{% endcomment %}
+<h5><a href="http://www.tsogu.ru/plan/">План мероприятий на месяц</a></h5>
+<h5><a href="http://www.tsogu.ru/holidays/">Афиша праздников</a></h5>
+
+{% autoescape off %}
+{% if events %}
+<div class="box">
+<h5>Анонсы</h5>
+{% for e in events %}
+
+<div style="padding: 3px 3px 1px"><a href="{{e.get_absolute_url}}">{{e.title}}</a><br/>
+<span>{{e.place}},</span><br/>
+{% load date_between %}
+<span>{% date_between e.date_start e.date_end 0 1 %}</span>
+</div>
+
+{% endfor %}
+</div>
+{% endif %}
+{% endautoescape %}

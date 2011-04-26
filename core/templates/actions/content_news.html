@@ -1,0 +1,55 @@
+<h2>{{ object.title }}</h2>
+
+
+{% load pytils_dt %}
+
+<form action="?" method="get">
+
+<div>
+<label for="id_begin_date">С </label>{{ form.begin_date }}
+<label for="id_begin_date"> по </label>{{ form.end_date }}
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="$('#tags_block').toggle()">Метки</a>
+&nbsp;&nbsp;&nbsp;&nbsp;<button type="submit">Показать</button>
+</div>
+<div id="tags_block" style="display:none; padding:1em;">
+{{ form.tags }}
+</div>
+<input type="hidden" value="1" name="page">
+</form><br/>
+
+<script type="text/javascript">
+	$(function() {
+		var dates = $('#id_begin_date, #id_end_date').datepicker({dateFormat:'dd.mm.yyyy'});
+	});
+</script>
+
+
+<table class="newsfeed">
+	{% for x in page.object_list %}
+	<tr><td class="news_line"><p id="headline">	<span>{% if x.get_front_image %}<img src="{{x.get_front_image.thumbnail.url}}" alt="{{x.get_front_image.title}}"/>{% endif %}</span>
+	  <b>{{ x.date_published|ru_strftime:"%d %B %Y" }}</b>&nbsp;<a href="{{ x.get_absolute_url }}"><b>{{ x.title }}</b></a>&nbsp;<span style="color:grey">({{ x.tags.all|join:", " }})</span><br/>{{ x.description }}</p></td></tr>
+	{% endfor %}
+</table><br/>
+
+{% ifnotequal pages.count "1" %}
+<center>
+<div id="pagination">
+	<b>Страницы: </b>&nbsp;
+{% if page.has_previous %}<a href="?{{ query }}&page={{ page.previous_page_number }}">предыдущая</a>{% endif %}
+
+	<span id="p-wrapper">&nbsp;|&nbsp;</span>
+
+	{% for p in pages.page_range %}
+	{% ifequal p page.number %}
+	<span id="active">{{ p }}</span>&nbsp;
+	{% else %}
+	<a href="?{{ query }}&page={{ p }}">{{ p }}</a>&nbsp;
+	{% endifequal %}
+	{% endfor %}
+
+	<span id="p-wrapper">&nbsp;|&nbsp;</span>
+
+{% if page.has_next %}<a href="?{{ query }}&page={{ page.next_page_number }}">следующая</a>{% endif %}
+</div>
+</center>
+{% endifnotequal %}

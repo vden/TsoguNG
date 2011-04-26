@@ -1,0 +1,30 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% block content %}
+<h2>{{ object.title }}</h2>
+
+<div class="description page">
+	{{ object.description }}
+</div>
+
+<hr/>
+
+<a href="http://old.tsogu.ru/1720/conferentions/">
+Список конференций (предыдущие)
+</a>
+
+<ul>
+  {% load nodes %}
+  {% nodes "parents" object.get_absolute_url "sort_fields" "-date_published" "for_user" "True" "states" "опубликованный" as objs %}
+	{% for x in objs %}
+	<li><a href="{{ x.get_absolute_url }}"><b>{{ x.title }}</b></a><br/>{{ x.description }}</li>
+	{% endfor %}
+</ul>
+
+<hr/>
+
+<p><b>
+Заинтересованных просим обращаться к Граф Э.Г., тел. 41-82-05, 6 корп. комн. 502.
+Более подробную информацию (Требования по оформлению материалов, формы заявок, банковские реквизиты ) Вы можете получить у Граф Э.Г., УНИР, патентно-информационный отдел, комн.502, 6 корп., тел.:41-82-05. Добро пожаловать! 
+</b></p>
+{% endblock %}

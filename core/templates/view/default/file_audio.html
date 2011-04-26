@@ -1,0 +1,90 @@
+{% extends "forms/default/wrapper.html" %}
+
+{% load pytils_dt %}
+
+{% block content %}
+<h1>{{ object.title }}</h1>
+
+<div style="overflow:hidden;width:100%">
+
+<div style="float:left">{{object.date_published|ru_strftime:"%d %B %Y г."}}</div>
+{% load range %}
+<div style="float:right">
+
+<script>$(function(){
+ $('.auto-submit-star').rating({
+  callback: function(value, link){
+    if(value!=''){
+    $.getJSON(
+       '{{object.get_absolute_url}}act/set_rate/?rating='+this.value,
+       function(result){
+         alert(result);
+         window.location.reload(true);
+       })
+    } } 
+})});</script>
+
+<div class="Clear">
+{% range "0" "5" "0.5" as rb %}
+{% for i in rb %}
+<input class="auto-submit-star {half:true}" type="radio" name="rating" value="{{i}}" {% ifequal i object.rating %}checked="checked"{% endifequal %}/>
+{% endfor %}
+</div>
+
+</div>
+
+<div style="float:right">Оценка:</div>
+
+</div>
+
+<table border="0" width="100%">
+<col width="70%"><col>
+<tr><td style="vertical-align:top">
+
+<div id="audio" style="display:block;width:100%;height:30px;" 
+    href="{{object.path.url}}"></div>
+<script type="text/javascript">
+$f("audio", "{{MEDIA_URL}}flowplayer-3.1.2.swf", { 
+    // fullscreen button not needed here 
+    plugins: { 
+        controls: { 
+            fullscreen: false, 
+            height: 30 
+        } ,
+        audio: { 
+            url: '{{MEDIA_URL}}flowplayer.audio-3.1.0.swf' 
+        } 
+    }, 
+ 
+    clip: { 
+        autoPlay: false, 
+ 
+        // optional: when playback starts close the first audio playback 
+        onBeforeBegin: function() { 
+            $f("player").close(); 
+        } 
+    } 
+ 
+});
+</script>
+
+<a href="{{object.path.url}}">Скачать файл ({{object.path.size|filesizeformat}})</a>
+</td><td style="vertical-align:top">
+
+<span><b>Длительность:</b></span>&nbsp;<span>{{object.mediainfo.length}}</span><br/>
+
+</td></tr></table>
+
+
+{% if object.description %}
+<div class="description" style="padding-top:1.5em">
+	{{ object.description }}
+</div>	
+{% endif %}
+
+{% load show_config %}
+{% show_config object %}
+
+{% load tsogu_comments %}
+{% comments %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% load nodes %}
+
+{% nodes "types" "File" "parents" object.get_absolute_url "sort_fields" "-date_published" "states" "опубликованный" as files %}
+
+{% if files %}
+<div style="margin: 15px 10px; width: 80%; padding: 10px 15px; background-color: #DFE9F4">
+	Вложенные файлы:
+	<ul>
+		{% for file in files %}
+		<li><a href="{{ file.get_absolute_url }}">{{file.title}}</a></li>
+		{% endfor %}
+	</ul>
+</div>
+{% endif %}

@@ -1,0 +1,64 @@
+<h4>Сводка
+	{% if res %}
+		({{inst}}, {{edu_form}})
+	{% endif %} 
+</h4>
+
+<form method="POST" act="/entrant/summary/">
+<select name="inst" id="inst">
+	{% for row in inst_list %}
+		{%ifequal inst row.0 %}
+			<option value="{{row.0}}" selected>{{row.0}}</option>
+		{%else%}
+			<option value="{{row.0}}">{{row.0}}</option>
+		{% endifequal %}
+	{% endfor %}
+</select>
+
+<select name="edu_form" id="edu_form">
+	{% for row in edu_form_list %}
+		{%ifequal edu_form row.0 %}
+			<option value="{{row.0}}" selected>{{row.0}}</option>
+		{%else%}
+			<option value="{{row.0}}">{{row.0}}</option>
+		{% endifequal %}
+	{% endfor %}
+</select>
+
+<input type="submit" value="Показать"/>
+</form>
+{% if res %}
+<table class="striped">
+	<tr>
+		<th rowspan=2>Специальность</th>
+		<th colspan=2>Мест</th>
+		<th rowspan=2>Всего</th>
+		<th rowspan=2>Сегодня</th>
+		<th colspan=3>Конкурс</th>
+		<th rowspan=2> Договор</th>
+	</tr>
+	<tr>
+		<th>Бюдж</th>
+		<th>Догов</th>
+		<th>Всего</th>
+		<th>Льготы</th>
+		<th>Целев.</th>
+	</tr>
+	{% for row in res %}
+	<tr>
+		<td>{{row.3}}</td>
+		<td>{{row.4}}</td>
+		<td>{{row.5}}</td>
+		
+		<td>{{row.6}}</td>
+		<td>{{row.7}}</td>
+		<td>{{row.8}}</td>
+		<td>{{row.9}}</td>
+		<td>{{row.10}}</td>
+		<td>{{row.11}}</td>
+	</tr>
+	{% endfor %}
+	
+</table>
+{% endif %}
+<p style="text-align: right; color: gray;">Информация обновится в {{gen_time.0}}</p>

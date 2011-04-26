@@ -1,0 +1,12 @@
+<h1>Востановление пароля</h1>
+<br/>
+<p>Для востановления пароля заполните форму, указав такой логин и электронную почту, который Вы использовали при регистрации, и нажмите кнопку отправить. Новый парольбудет отправлен по указаному адресу.</p>
+<br/>
+<form action="." method="post">
+	<table>
+	{{ form.as_table }}
+	<tr><td colspan="2" style="text-align:right;"><button type="submit">Отправить</button></td></tr>
+	</table>
+</form>
+
+{% if form.message %}<ul class="errorlist"><li>{{ form.message }}</li></ul>{% endif %}

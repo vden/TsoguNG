@@ -1,0 +1,52 @@
+<style>
+	div.loading {
+		text-align: center;
+	}
+	#complain_dialog {
+		border: 1px #8CACBB solid;
+		background-color: whitesmoke;
+		position: absolute;
+		padding: 5px;
+		width: 500px;
+		overflow: hidden;
+	}
+	#complain_dialog input[type=image]{
+		float: right;
+		background: transparent;
+		border: none;
+		padding: 1px;
+	}
+	#complain_dialog input[type=image]:hover {
+		border: 1px #8CACBB solid;
+		padding: 0;
+	}
+	div.loading {
+		text-align: center;
+		padding: 10px;
+	}
+	div.complain-wrapper {
+		text-align: center;
+	}
+</style>
+<div class="complain-wrapper">
+	<a href="javascript:;" class="complain_link local-link">Отправить замечание по содержимому страницы редактору...</a>
+</div>
+<script>
+	var dialog = $("<div id='complain_dialog'>\
+		<input type='image' src='/media/img/icons/cancel.png' title='Закрыть' alt='X' onclick='$(this).parent().hide()'/>\
+		<div class='content'></div>");
+	var content = $('.content', dialog);
+	var loading = $("<div class='loading'>Идёт загрузка...</div>");
+	$("a.complain_link").click(function () {
+		var position = $(this).position()
+		dialog.insertBefore(this).draggable().css({left: position.left, top: position.top-210}).show();
+		$.ajax({
+			url: "/portal/complain/",
+			type: "GET",
+			data: '&object={{object.id}}&url={{url}}',
+			beforeSend: function() {content.html(loading);},
+			success: function(data) {content.html(data);},
+			error: function() {content.text("Произошла ошибка при загрузке формы")}
+		});
+	})
+</script>

@@ -1,0 +1,31 @@
+{% load pytils_dt %}
+{% load get_rss %}
+{% load feedparsed %}
+
+{% get_rss object.config.external_rss as rss %}
+<h1>{{ rss.feed.title }}</h1>
+
+<div class="description">
+{{ rss.feed.description }}
+</div>
+
+{% if object.config.rss_count %}
+{# тут надо как-то учитывать заданное количество постов #}
+{% for entry in rss.entries %}
+<div style="padding-top:0.4em;padding-bottom:0.8em">
+  <b>{{ entry.updated_parsed|feedparsed|ru_strftime:"%d %B %Y, %H:%M" }}.</b>&nbsp;<a href="{{entry.link}}">{{entry.title}}</a>
+  <div style="padding-top:0.3em">
+    {{entry.summary|safe}}
+  </div>
+</div>
+{% endfor %}
+{% else %}
+{% for entry in rss.entries %}
+<div style="padding-top:0.4em;padding-bottom:0.8em">
+  <b>{{ entry.updated_parsed|feedparsed|ru_strftime:"%d %B %Y, %H:%M" }}.</b>&nbsp;<a href="{{entry.link}}">{{entry.title}}</a>
+  <div style="padding-top:0.3em">
+    {{entry.summary|safe}}
+  </div>
+</div>
+{% endfor %}
+{% endif %}

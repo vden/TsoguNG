@@ -1,0 +1,102 @@
+{% load cache %}
+
+{% cache 10800 "summary" request.GET %}
+<style>
+.filters label {
+	vertical-align:bottom;
+	margin-right:2em;
+}
+.filters select {
+	margin-right:1em;
+	width: 400px;
+}
+</style>
+
+{% load extra_api %}
+{% gjson "http://rubicon.tsogu.ru/abiturient/api/eduform/json/" as eduform %}
+{% gjson "http://rubicon.tsogu.ru/abiturient/api/institutes/json/" as institutes %}
+
+{% if request.GET.inst %}
+{% gjson "http://rubicon.tsogu.ru/abiturient/api/summary/json/?inst_id=" request.GET.inst "&eduform_id=" request.GET.edu_form as summary %}
+{% endif %}
+
+<h4>Сводка поданных заявлений
+{% if summary %}
+	({{ summary.institute }}, {{ summary.eduform }})
+{% endif %}
+</h4>
+
+<form method="get" action="." class="filters">
+<hr/>
+
+<table>
+	<tr>
+		<td><label for="edu_form">Форма обучения</label></td>
+		<td>
+			<select name="edu_form" id="edu_form">
+				{% for row in eduform %}
+				<option id="edu_form_{{ row.id }}" value="{{ row.id }}" 
+					{% ifequal row.id request.GET.edu_form %}selected{% endifequal %}>{{ row.name }}</option>
+				{% endfor %}
+				<script language="javascript">
+					$('#edu_form_{{ request.GET.edu_form }}').attr('selected',true);
+				</script>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td><label for="inst">Институт</label></td>
+		<td>
+			<select name="inst" id="inst">
+				<option value="">--Институт--</option>
+				{% for row in institutes %}
+				<option id="inst_{{ row.id }}" value="{{ row.id }}" 
+					{% ifequal row.id request.GET.inst %}selected{% endifequal %}>{{ row.name }}</option>
+				{% endfor %}
+				<script language="javascript">
+					$('#inst_{{ request.GET.inst }}').attr('selected',true);
+				</script>
+			</select>
+		</td>
+	</tr>
+</table>
+<input type="submit" value="Показать"/>
+</form>
+<hr/>
+
+{% if summary.data %}
+<table class="striped">
+	<tr>
+		<th rowspan=2>Специальность</th>
+		<th colspan=2>Мест</th>
+		<th rowspan=2>Всего</th>
+		<th rowspan=2>Сегодня</th>
+		<th colspan=3>Конкурс</th>
+		<th rowspan=2> Договор</th>
+	</tr>
+	<tr>
+		<th>Бюдж</th>
+		<th>Догов</th>
+		<th>Всего</th>
+		<th>Льготы</th>
+		<th>Целев.</th>
+	</tr>
+	{% for row in summary.data %}
+	<tr>
+		<td><a title='{{ row.fullspecname }}' href="/entrant/specialities/?speciality={{ row.spec_id }}">{{ row.specname }}</a></td>
+		<td>{{ row.budget_places }}</td>
+		<td>{{ row.contract_places }}</td>
+		
+		<td>{{ row.total }}</td>
+		<td>{{ row.total_by_date }}</td>
+		<td>{{ row.konkurs }}</td>
+		<td>{{ row.lgot }}</td>
+		<td>{{ row.aim }}</td>
+		<td>{{ row.dogovor }}</td>
+	</tr>
+	{% endfor %}
+	
+</table>
+<p style="text-align: right; color: gray;">Данные получены на  {% now "j.m.y H:i" %}. Данные обновятся через 3 часа.</p>
+{% endif %}
+{% endcache %}
